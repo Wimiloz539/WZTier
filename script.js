@@ -167,15 +167,13 @@ async function deletePlayer(name) {
 
 loadData();
 
-// --- SEGURIDAD DE ACCESO AL PANEL ---
-
-// --- NUEVO SISTEMA DE LOGIN SEGURO ---
+// --- SISTEMA DE LOGIN ---
 
 function tryLogin() {
     const enteredPass = document.getElementById("adminPassInput").value;
 
     if (enteredPass === ADMIN_KEY) {
-        // Si es correcta, ocultamos el login y mostramos el admin
+        // Mostramos el panel y ocultamos el login
         document.getElementById("loginSection").style.display = "none";
         document.getElementById("adminContent").style.display = "block";
         loadData();
@@ -184,15 +182,12 @@ function tryLogin() {
     }
 }
 
-// Esta función ahora solo verifica si estamos en la página de admin
-function initAdmin() {
-    if (document.getElementById("playersAdmin")) {
-        // No hacemos nada, esperamos a que el usuario use el botón "Entrar"
-    } else {
-        loadData(); // Carga normal si es el ranking
+// Inicialización
+function init() {
+    // Si NO hay panel de admin (estamos en el index), cargamos datos normal
+    if (!document.getElementById("playersAdmin")) {
+        loadData();
     }
 }
 
-initAdmin();
-// Reemplazamos el loadData() seco por la validación
-checkAdminAccess();
+init();
