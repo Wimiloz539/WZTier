@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>MCTiers Ranking</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <h1>MCTiers Ranking</h1>
+
+    <table id="ranking">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Jugador</th>
+                <th>Puntos</th>
+                <th>Perfil</th>
+            </tr>
+        </thead>
+        <tbody id="rankingBody"></tbody>
+    </table>
+
+    <div id="playerModal" class="modal-overlay" style="display: none;">
+        <div class="rank-card">
+            <button class="close-btn" onclick="closeModal()">&times;</button>
+            
+            <div class="circular-avatar">
+                <img id="playerAvatar" src="" alt="Avatar">
+            </div>
+
+            <h2 id="modalName" class="player-title">Nombre</h2>
+
+            <div class="ranking-box-centered">
+                <span id="modalRank" class="rank-tag">#1</span>
+            </div>
+
+            <h3 class="section-label">TIERS</h3>
+            
+            <div id="modalStats" class="tiers-grid-stacked">
+                </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

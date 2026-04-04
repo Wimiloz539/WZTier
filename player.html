@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Player</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<h1 id="playerName"></h1>
+
+<div id="stats"></div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
+
+const params = new URLSearchParams(window.location.search)
+const name = params.get("name")
+
+async function loadPlayer(){
+
+const res = await fetch(API)
+const players = await res.json()
+
+const p = players.find(x=>x.name===name)
+
+let html=""
+
+modes.forEach(m=>{
+
+html += `
+<p>${m}: ${p[m]}</p>
+`
+
+})
+
+document.getElementById("stats").innerHTML = html
+
+}
+
+loadPlayer()
