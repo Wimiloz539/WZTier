@@ -118,19 +118,21 @@ function closeModal() {
 async function addPlayer() {
     const nameInput = document.getElementById("playerName");
     const name = nameInput.value.trim();
-    if (!name) return alert("Escribí un nombre");
+    if (!name) return alert("pene521");
 
     try {
         await fetch(`${API}/player`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: { 
+                "Content-Type": "application/json",
+                "admin-key": ADMIN_KEY // <--- Enviamos la contraseña
+            },
             body: JSON.stringify({ name, region: "None", points: 0 })
         });
         nameInput.value = "";
         loadData();
     } catch (e) { alert("Error al conectar"); }
 }
-
 function editPlayer(name) {
     editingPlayer = name;
     const p = allPlayers.find(x => x.name === name);
@@ -178,7 +180,10 @@ async function saveEdit() {
     try {
         await fetch(`${API}/player/${editingPlayer}`, {
             method: "PUT",
-            headers: { "Content-Type": "application/json" },
+            headers: { 
+                "Content-Type": "application/json",
+                "admin-key": ADMIN_KEY // <--- Enviamos la contraseña
+            },
             body: JSON.stringify(data)
         });
         closeEditModal();
@@ -186,17 +191,17 @@ async function saveEdit() {
     } catch (e) { alert("Error al guardar"); }
 }
 
-function closeEditModal() { 
-    document.getElementById("editModal").style.display = "none"; 
-}
-
 async function deletePlayer(name) {
     if (!confirm(`¿Eliminar a ${name}?`)) return;
     try {
-        await fetch(`${API}/player/${name}`, { method: "DELETE" });
+        await fetch(`${API}/player/${name}`, { 
+            method: "DELETE",
+            headers: { 
+                "admin-key": ADMIN_KEY // <--- Enviamos la contraseña
+            }
+        });
         loadData();
     } catch (e) { console.error(e); }
 }
-
 // --- ARRANQUE ---
 loadData();
