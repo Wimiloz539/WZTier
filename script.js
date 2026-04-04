@@ -169,25 +169,30 @@ loadData();
 
 // --- SEGURIDAD DE ACCESO AL PANEL ---
 
-function checkAdminAccess() {
-    // Solo pedimos contraseña si estamos en la página de admin
-    if (document.getElementById("playersAdmin")) {
-        const pass = prompt("Ingresá la contraseña de administrador:");
+// --- NUEVO SISTEMA DE LOGIN SEGURO ---
 
-        if (pass === ADMIN_KEY) {
-            // Si es correcta, mostramos el contenido
-            document.getElementById("adminContent").style.display = "block";
-            loadData();
-        } else {
-            // Si es incorrecta, alerta y para afuera
-            alert("Contraseña incorrecta. Volviendo al ranking...");
-            window.location.href = "index.html"; 
-        }
-    } else {
-        // Si es el index (ranking), carga normal sin pedir nada
+function tryLogin() {
+    const enteredPass = document.getElementById("adminPassInput").value;
+
+    if (enteredPass === ADMIN_KEY) {
+        // Si es correcta, ocultamos el login y mostramos el admin
+        document.getElementById("loginSection").style.display = "none";
+        document.getElementById("adminContent").style.display = "block";
         loadData();
+    } else {
+        alert("Clave incorrecta");
     }
 }
 
+// Esta función ahora solo verifica si estamos en la página de admin
+function initAdmin() {
+    if (document.getElementById("playersAdmin")) {
+        // No hacemos nada, esperamos a que el usuario use el botón "Entrar"
+    } else {
+        loadData(); // Carga normal si es el ranking
+    }
+}
+
+initAdmin();
 // Reemplazamos el loadData() seco por la validación
 checkAdminAccess();
