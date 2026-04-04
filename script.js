@@ -1,4 +1,5 @@
-const API = "https://tiers.onrender.com/players"; 
+const API = "https://tiers.onrender.com"; // El link azul que te dio Render
+const ADMIN_KEY = "WZ21TIERS539"; // Inventá una clave para proteger los datos
 
 const levelPoints = {
     HT1: 60, LT1: 45, HT2: 30, LT2: 20,
@@ -181,3 +182,121 @@ async function deletePlayer(name) {
 
 loadRanking();
 loadAdmin();
+
+// --- FUNCIONES DE ADMIN ---
+
+// Cargar la tabla de admin al entrar
+if (document.getElementById('playersAdmin')) {
+    window.addEventListener('load', loadAdminTable);
+}
+
+async function loadAdminTable() {
+    const res = await fetch(`${API}/players`);
+    const players = await res.json();
+    const tbody = document.getElementById('playersAdmin');
+    tbody.innerHTML = "";
+
+    players.forEach(p => {
+        tbody.innerHTML += `
+            <tr>
+                <td>${p.name}</td>
+                <td>${p.region || 'N/A'}</td>
+                <td><button class="btn-edit" onclick="openEditModal('${p.name}')">📝 Editar</button></td>
+                <td><button class="btn-delete" onclick="deletePlayer('${p.name}')">🗑️ Borrar</button></td>
+            </tr>
+        `;
+    });
+}
+
+// Agregar jugador nuevo
+async function addPlayer() {
+    const name = document.getElementById('playerName').value;
+    if (!name) return alert("Falta el nombre");
+
+    const newPlayer = {
+        name: name,
+        sword: "None", axe: "None", crystal: "None", uhc: "None",
+        smp: "None", nethpot: "None", diamondpot: "None", mace: "None",
+        region: "South America"
+    };
+
+    const res = await fetch(`${API}/player`, {
+        method: 'POST',
+        headers: { 
+            'Content-Type': 'application/json',
+            'admin-key': ADMIN_KEY 
+        },
+        body: JSON.stringify(newPlayer)
+    });
+
+    if (res.ok) {
+        alert("Agregado!");
+        loadAdminTable();
+    }
+}
+
+// Abrir modal para editar tiers
+let currentPlayerName = "";
+async function openEditModal(name) {
+    const res = await fetch(`${API}/players`);
+    const players = await res.json();
+    const p = players.find(x => x.name === name);
+    
+    currentPlayerName = name;
+    document.getElementById('editName').innerText = name;
+    const container = document.getElementById('editModes');
+    container.innerHTML = "";
+
+    modes.forEach(m => {
+        container.innerHTML += `
+            <div class="edit-field">
+                <label>${m.toUpperCase()}:</label>
+                <input type="text" id="edit-${m}" value="${p[m] || 'None'}">
+            </div>
+        `;
+    });
+    // Agregar campo de región
+    container.innerHTML += `
+        <div class="edit-field">
+            <label>REGIÓN:</label>
+            <input type="text" id="edit-region" value="${p.region || 'South America'}">
+        </div>
+    `;
+
+    document.getElementById('editModal').style.display = "flex";
+}
+
+// Guardar cambios del modal
+async function saveEdit() {
+    const updated = {};
+    modes.forEach(m => updated[m] = document.getElementById(`edit-${m}`).value);
+    updated.region = document.getElementById('edit-region').value;
+
+    const res = await fetch(`${API}/player/${currentPlayerName}`, {
+        method: 'PUT',
+        headers: { 
+            'Content-Type': 'application/json',
+            'admin-key': ADMIN_KEY 
+        },
+        body: JSON.stringify(updated)
+    });
+
+    if (res.ok) {
+        alert("Actualizado!");
+        closeEditModal();
+        loadAdminTable();
+    }
+}
+
+function closeEditModal() {
+    document.getElementById('editModal').style.display = "none";
+}
+
+async function deletePlayer(name) {
+    if (!confirm(`¿Borrar a ${name}?`)) return;
+    await fetch(`${API}/player/${name}`, {
+        method: 'DELETE',
+        headers: { 'admin-key': ADMIN_KEY }
+    });
+    loadAdminTable();
+}
