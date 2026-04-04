@@ -1,5 +1,6 @@
+const ADMIN_KEY = "WZ21TIERS539";
 let allPlayers = []; 
-const API = "https://tiers.onrender.com"; // Asegurate que este sea el link de Render sin /players al final
+const API = "https://tiers.onrender.com";
 
 const levelPoints = {
     HT1: 60, LT1: 45, HT2: 30, LT2: 20,
