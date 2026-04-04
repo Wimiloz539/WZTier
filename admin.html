@@ -7,60 +7,60 @@
 </head>
 <body>
 
-    <h1>Admin Panel</h1>
+    <div id="adminContent" style="display: none;">
+        <h1>Admin Panel</h1>
 
-    <div class="admin-controls">
-        <input id="playerName" placeholder="Nombre jugador">
-        <button onclick="addPlayer()">Agregar</button>
-    </div>
+        <div class="admin-controls">
+            <input id="playerName" placeholder="Nombre jugador">
+            <button onclick="addPlayer()">Agregar</button>
+        </div>
 
-    <h2>Jugadores</h2>
+        <h2>Jugadores</h2>
 
-    <table id="adminTable">
-        <thead>
-            <tr>
-                <th>Nombre</th>
-                <th>Región</th> 
-                <th>Editar</th>
-                <th>Eliminar</th>
-            </tr>
-        </thead>
-        <tbody id="playersAdmin"></tbody>
-    </table>
+        <table id="adminTable">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Región</th> 
+                    <th>Editar</th>
+                    <th>Eliminar</th>
+                </tr>
+            </thead>
+            <tbody id="playersAdmin"></tbody>
+        </table>
 
-    <div id="editModal" class="modal-overlay" style="display: none;">
-        <div class="rank-card">
-            <button class="close-btn" onclick="closeEditModal()">&times;</button>
-            <h2 class="player-title">Editar: <span id="editName"></span></h2>
-            <div id="editModes" class="edit-grid"></div>
-            <div style="margin-top: 20px;">
-                <button class="btn-save" onclick="saveEdit()">Guardar Cambios</button>
+        <div id="editModal" class="modal-overlay" style="display: none;">
+            <div class="rank-card">
+                <button class="close-btn" onclick="closeEditModal()">&times;</button>
+                <h2 class="player-title">Editar: <span id="editName"></span></h2>
+                <div id="editModes" class="edit-grid"></div>
+                <div style="margin-top: 20px;">
+                    <button class="btn-save" onclick="saveEdit()">Guardar Cambios</button>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div id="playerModal" class="modal-overlay" style="display:none">
-        <div class="rank-card">
-            <div class="card-header">
-                <h3>Información del Jugador</h3>
-                <button class="close-btn" onclick="closeModal()">&times;</button>
-            </div>
-            <div class="card-body">
-                <div class="player-avatar">
-                    <img id="playerAvatar" src="" alt="Skin">
+        <div id="playerModal" class="modal-overlay" style="display:none">
+            <div class="rank-card">
+                <div class="card-header">
+                    <h3>Información del Jugador</h3>
+                    <button class="close-btn" onclick="closeModal()">&times;</button>
                 </div>
-                <div class="player-info">
-                    <div class="main-info">
-                        <h2 id="modalName">Nombre</h2>
-                        <p class="overall-rank" id="modalRank">#? OVERALL</p>
-                        <p style="color:white; margin-top:-10px;">Puntos: <span id="modalPoints">0</span></p>
+                <div class="card-body">
+                    <div class="player-avatar">
+                        <img id="playerAvatar" src="" alt="Skin">
                     </div>
-                    <div id="modalStats" class="modes-grid"></div>
+                    <div class="player-info">
+                        <div class="main-info">
+                            <h2 id="modalName">Nombre</h2>
+                            <p class="overall-rank" id="modalRank">#? OVERALL</p>
+                            <p style="color:white; margin-top:-10px;">Puntos: <span id="modalPoints">0</span></p>
+                        </div>
+                        <div id="modalStats" class="modes-grid"></div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-
-    <script src="script.js"></script>
+    </div> <script src="script.js"></script>
 </body>
 </html>
