@@ -1,4 +1,4 @@
-const API = "https://tiers.onrender.com"; // El link azul que te dio Render
+const API = "https://tiers.onrender.com/admin.html"; // El link azul que te dio Render
 const ADMIN_KEY = "WZ21TIERS539"; // Inventá una clave para proteger los datos
 
 const levelPoints = {
