@@ -166,3 +166,28 @@ async function deletePlayer(name) {
 }
 
 loadData();
+
+// --- SEGURIDAD DE ACCESO AL PANEL ---
+
+function checkAdminAccess() {
+    // Solo pedimos contraseña si estamos en la página de admin
+    if (document.getElementById("playersAdmin")) {
+        const pass = prompt("Ingresá la contraseña de administrador:");
+
+        if (pass === ADMIN_KEY) {
+            // Si es correcta, mostramos el contenido
+            document.getElementById("adminContent").style.display = "block";
+            loadData();
+        } else {
+            // Si es incorrecta, alerta y para afuera
+            alert("Contraseña incorrecta. Volviendo al ranking...");
+            window.location.href = "index.html"; 
+        }
+    } else {
+        // Si es el index (ranking), carga normal sin pedir nada
+        loadData();
+    }
+}
+
+// Reemplazamos el loadData() seco por la validación
+checkAdminAccess();
