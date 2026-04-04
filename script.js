@@ -14,34 +14,22 @@ const regions = ["South America", "Europe", "North America", "Asia", "Africa", "
 let editingPlayer = null;
 
 // --- CARGA DE DATOS ---
-
 async function loadData() {
     try {
         const res = await fetch(`${API}/players`);
         const players = await res.json();
-        
-        // Guardamos en la variable global para que el admin pueda leerlos
         allPlayers = players;
 
-        // Si estamos en la página de Ranking
-        if (document.getElementById("rankingBody")) {
-            renderRanking(players);
-        }
-        
-        // Si estamos en la página de Admin
-        if (document.getElementById("playersAdmin")) {
-            renderAdmin(players);
-        }
+        if (document.getElementById("rankingBody")) renderRanking(players);
+        if (document.getElementById("playersAdmin")) renderAdmin(players);
     } catch (e) {
         console.error("Error cargando datos:", e);
     }
 }
 
 // --- RENDERIZADO ---
-
 function renderRanking(players) {
     const tbody = document.getElementById("rankingBody");
-    players.sort((a, b) => (b.points || 0) - (a.points || 0));
     tbody.innerHTML = "";
     players.forEach((p, i) => {
         tbody.innerHTML += `
@@ -68,15 +56,14 @@ function renderAdmin(players) {
     });
 }
 
-// --- FUNCIONES DE PERFIL (MODAL) ---
-
+// --- PERFIL (MODAL) ---
 async function viewPlayer(name) {
     const p = allPlayers.find(x => x.name === name);
     if (!p) return;
 
     document.getElementById("modalName").innerText = p.name;
     const regionText = p.region && p.region !== "None" ? p.region : "No Region";
-    const pIndex = allPlayers.sort((a, b) => (b.points || 0) - (a.points || 0)).findIndex(x => x.name === name);
+    const pIndex = allPlayers.findIndex(x => x.name === name);
 
     document.getElementById("modalRank").innerHTML = `
         <div class="region-text">${regionText}</div>
@@ -90,18 +77,18 @@ async function viewPlayer(name) {
         </div>
     `;
     
-    const avatarImg = document.getElementById("playerAvatar");
-    if(avatarImg) avatarImg.src = `https://mc-heads.net/avatar/${p.name}/100`;
+    if(document.getElementById("playerAvatar")) {
+        document.getElementById("playerAvatar").src = `https://mc-heads.net/avatar/${p.name}/100`;
+    }
 
     const stats = document.getElementById("modalStats");
     stats.innerHTML = "";
     modes.forEach(m => {
-        const val = p[m] || "None";
         stats.innerHTML += `
             <div class="tier-item">
                 <div class="tier-info-text">
                     <span class="tier-name">${m.toUpperCase()}</span>
-                    <span class="tier-value">${val}</span>
+                    <span class="tier-value">${p[m] || "None"}</span>
                 </div>
             </div>`;
     });
@@ -109,81 +96,55 @@ async function viewPlayer(name) {
     document.getElementById("playerModal").style.display = "flex";
 }
 
-function closeModal() { 
-    document.getElementById("playerModal").style.display = "none"; 
-}
+function closeModal() { document.getElementById("playerModal").style.display = "none"; }
 
-// --- ACCIONES DE ADMIN ---
-
+// --- ACCIONES ADMIN ---
 async function addPlayer() {
     const nameInput = document.getElementById("playerName");
     const name = nameInput.value.trim();
-    if (!name) return alert("pene521");
+    if (!name) return alert("Escribí un nombre válido");
 
     try {
         await fetch(`${API}/player`, {
             method: "POST",
-            headers: { 
-                "Content-Type": "application/json",
-                "admin-key": ADMIN_KEY // <--- Enviamos la contraseña
-            },
-            body: JSON.stringify({ name, region: "None", points: 0 })
+            headers: { "Content-Type": "application/json", "admin-key": ADMIN_KEY },
+            body: JSON.stringify({ name, region: "None" })
         });
         nameInput.value = "";
         loadData();
     } catch (e) { alert("Error al conectar"); }
 }
+
 function editPlayer(name) {
     editingPlayer = name;
     const p = allPlayers.find(x => x.name === name);
     if (!p) return;
-
     document.getElementById("editName").innerText = p.name;
     
-    let html = `
-        <div style="grid-column: 1 / -1; background: #21262d; padding: 15px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #30363d; text-align: left;">
-            <b style="display: block; margin-bottom: 8px; color: #58a6ff; font-size: 0.8rem;">REGIÓN</b>
-            <select id="edit_region" style="width: 100%; padding: 8px; border-radius: 4px; background: #0d1117; color: white; border: 1px solid #30363d;">
-                <option value="None" ${!p.region || p.region === "None" ? "selected" : ""}>Select Region</option>
-                ${regions.map(reg => `<option value="${reg}" ${p.region === reg ? "selected" : ""}>${reg}</option>`).join('')}
-            </select>
-        </div>`;
+    let html = `<div style="grid-column: 1/-1; background:#21262d; padding:15px; border-radius:8px; margin-bottom:10px;">
+        <b style="color:#58a6ff;">REGIÓN</b>
+        <select id="edit_region" style="width:100%; background:#0d1117; color:white;">
+            ${regions.map(r => `<option value="${r}" ${p.region === r ? 'selected':''}>${r}</option>`).join('')}
+        </select></div>`;
 
     modes.forEach(m => {
-        html += `
-            <div class="modality">
-                <b>${m.toUpperCase()}</b>
-                <select id="edit_${m}">
-                    ${Object.keys(levelPoints).map(lvl => 
-                        `<option value="${lvl}" ${p[m] === lvl ? "selected" : ""}>${lvl}</option>`
-                    ).join('')}
-                </select>
-            </div>`;
+        html += `<div class="modality"><b>${m.toUpperCase()}</b>
+            <select id="edit_${m}">
+                ${Object.keys(levelPoints).map(lvl => `<option value="${lvl}" ${p[m]===lvl?'selected':''}>${lvl}</option>`).join('')}
+            </select></div>`;
     });
-
     document.getElementById("editModes").innerHTML = html;
     document.getElementById("editModal").style.display = "flex";
 }
 
 async function saveEdit() {
-    let data = { 
-        region: document.getElementById("edit_region").value,
-        points: 0 
-    };
-
-    modes.forEach(m => { 
-        const val = document.getElementById("edit_" + m).value;
-        data[m] = val;
-        data.points += levelPoints[val] || 0;
-    });
+    let data = { region: document.getElementById("edit_region").value };
+    modes.forEach(m => data[m] = document.getElementById("edit_" + m).value);
 
     try {
         await fetch(`${API}/player/${editingPlayer}`, {
             method: "PUT",
-            headers: { 
-                "Content-Type": "application/json",
-                "admin-key": ADMIN_KEY // <--- Enviamos la contraseña
-            },
+            headers: { "Content-Type": "application/json", "admin-key": ADMIN_KEY },
             body: JSON.stringify(data)
         });
         closeEditModal();
@@ -191,17 +152,17 @@ async function saveEdit() {
     } catch (e) { alert("Error al guardar"); }
 }
 
+function closeEditModal() { document.getElementById("editModal").style.display = "none"; }
+
 async function deletePlayer(name) {
     if (!confirm(`¿Eliminar a ${name}?`)) return;
     try {
-        await fetch(`${API}/player/${name}`, { 
+        await fetch(`${API}/player/${name}`, {
             method: "DELETE",
-            headers: { 
-                "admin-key": ADMIN_KEY // <--- Enviamos la contraseña
-            }
+            headers: { "admin-key": ADMIN_KEY }
         });
         loadData();
     } catch (e) { console.error(e); }
 }
-// --- ARRANQUE ---
+
 loadData();
