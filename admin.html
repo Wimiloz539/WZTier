@@ -7,16 +7,12 @@
 </head>
 <body>
 
-<div id="loginSection" style="text-align: center; margin-top: 100px;">
-    <h2>Panel de Control</h2>
-    <input type="password" id="adminPassInput" placeholder="Contraseña" style="padding: 10px; border-radius: 5px; border: 1px solid #30363d; background: #0d1117; color: white;">
-    <button onclick="tryLogin()" style="padding: 10px 20px; cursor: pointer;">Entrar</button>
-</div>
+    <div id="loginSection" style="text-align: center; margin-top: 100px;">
+        <h2>Panel de Control</h2>
+        <input type="password" id="adminPassInput" placeholder="Contraseña" style="padding: 10px; border-radius: 5px; border: 1px solid #30363d; background: #0d1117; color: white;">
+        <button onclick="tryLogin()" style="padding: 10px 20px; cursor: pointer;">Entrar</button>
+    </div>
 
-<div id="adminContent" style="display: none;">
-    ...
-</div>
-    
     <div id="adminContent" style="display: none;">
         <h1>Admin Panel</h1>
 
@@ -64,13 +60,14 @@
                         <div class="main-info">
                             <h2 id="modalName">Nombre</h2>
                             <p class="overall-rank" id="modalRank">#? OVERALL</p>
-                            <p style="color:white; margin-top:-10px;">Puntos: <span id="modalPoints">0</span></p>
                         </div>
                         <div id="modalStats" class="modes-grid"></div>
                     </div>
                 </div>
             </div>
         </div>
-    </div> <script src="script.js"></script>
+    </div> 
+
+    <script src="script.js"></script>
 </body>
 </html>
