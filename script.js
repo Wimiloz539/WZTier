@@ -3,150 +3,130 @@ const API = "https://tiers.onrender.com";
 let allPlayers = [];
 let currentTab = 'overall';
 
-const levelPoints = { HT1: 60, LT1: 45, HT2: 30, LT2: 20, HT3: 10, LT3: 6, HT4: 4, LT4: 3, HT5: 2, LT5: 1, None: 0 };
-const modeIcons = { sword: "⚔️", vanilla: "📦", uhc: "❤️", pot: "🧪", smp: "🌍", axe: "🪓", mace: "🔨", crystal: "💎" };
-const modes = Object.keys(modeIcons);
+// Puntuación para ordenar de mayor a menor
+const levelPoints = {
+    HT1: 100, LT1: 90, HT2: 80, LT2: 70, HT3: 60, LT3: 50, HT4: 40, LT4: 30, HT5: 20, LT5: 10, None: 0
+};
+
+const modeIcons = {
+    sword: "⚔️", vanilla: "📦", uhc: "❤️", pot: "🧪", 
+    smp: "🌍", axe: "🪓", mace: "🔨", crystal: "💎"
+};
 
 async function loadData() {
     try {
         const res = await fetch(`${API}/players`);
-        const data = await res.json();
-        
-        allPlayers = data.map(p => {
-            let pts = 0;
-            modes.forEach(m => pts += (levelPoints[p[m]] || 0));
-            return { ...p, points: pts };
-        });
-
-        render();
-    } catch (e) { console.error("Error:", e); }
+        allPlayers = await res.json();
+        renderRanking();
+    } catch (e) { console.error("Error cargando datos:", e); }
 }
 
-function changeTab(tab) {
+function switchTab(tab) {
     currentTab = tab;
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.innerText.toLowerCase().includes(tab));
-    });
-    render();
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+    renderRanking();
 }
 
-function render() {
+function renderRanking() {
     const container = document.getElementById("rankingContainer");
-    let playersToShow = [...allPlayers];
+    container.innerHTML = "";
 
-    // Si no es "overall", filtramos y ordenamos por esa modalidad específica
-    if (currentTab !== 'overall') {
-        playersToShow = playersToShow.filter(p => p[currentTab] && p[currentTab] !== "None");
-        playersToShow.sort((a, b) => levelPoints[b[currentTab]] - levelPoints[a[currentTab]]);
-    } else {
-        playersToShow.sort((a, b) => b.points - a.points);
-    }
+    // Ordenar jugadores por puntos totales
+    allPlayers.sort((a, b) => (b.points || 0) - (a.points || 0));
 
-    container.innerHTML = playersToShow.map((p, index) => {
-        // Generar tiers ordenados para la fila
-        let playerTiers = modes
-            .map(m => ({ mode: m, rank: p[m] || 'None', pts: levelPoints[p[m]] || 0 }))
-            .filter(t => t.rank !== 'None')
+    allPlayers.forEach((p, i) => {
+        const row = document.createElement("div");
+        row.className = "player-row";
+        row.onclick = () => viewPlayer(p.name);
+
+        // Lógica de Tiers: Filtrar, Ordenar y Rellenar
+        let activeTiers = Object.keys(modeIcons)
+            .filter(m => p[m] && p[m] !== "None")
+            .map(m => ({ mode: m, rank: p[m], pts: levelPoints[p[m]] }))
             .sort((a, b) => b.pts - a.pts); // Ordenar de mayor a menor
 
-        let tiersHtml = playerTiers.map(t => `
-            <div class="tier-pill border-${t.rank}">
-                <span>${modeIcons[t.mode]}</span>
-                <span class="rank-text">${t.rank}</span>
-            </div>
-        `).join("");
+        let tiersHtml = "";
+        // 1. Dibujar tiers activos
+        activeTiers.forEach(t => {
+            tiersHtml += `
+                <div class="tier-circle border-${t.rank}">
+                    <span class="m-icon">${modeIcons[t.mode]}</span>
+                    <span class="m-rank">${t.rank}</span>
+                </div>`;
+        });
 
-        return `
-            <div class="player-row" onclick="viewPlayer('${p.name}')">
-                <div class="rank-num">#${index + 1}</div>
-                <img class="p-head" src="https://mc-heads.net/avatar/${p.name}/32">
-                <div class="p-info">
-                    <span class="p-name">${p.name}</span>
-                    <span class="p-pts-sub">${p.points} pts</span>
-                </div>
-                <div class="p-tiers-line">${tiersHtml}</div>
-            </div>`;
-    }).join("");
+        // 2. Rellenar con círculos vacíos hasta 8
+        for (let j = activeTiers.length; j < 8; j++) {
+            tiersHtml += `<div class="tier-circle empty"></div>`;
+        }
+
+        row.innerHTML = `
+            <span class="rank-index">#${i + 1}</span>
+            <img src="https://mc-heads.net/avatar/${p.name}/40" class="p-icon">
+            <div class="name-box">
+                <span class="p-name">${p.name}</span>
+                <span class="p-pts">${p.points || 0} PTS</span>
+            </div>
+            <div class="region-tag">${p.region || 'NA'}</div>
+            <div class="tiers-container">${tiersHtml}</div>
+        `;
+        container.appendChild(row);
+    });
 }
 
-async function viewPlayer(name) {
+function viewPlayer(name) {
     const p = allPlayers.find(x => x.name === name);
     if (!p) return;
 
     document.getElementById("modalName").innerText = p.name;
-    document.getElementById("modalRegion").innerText = p.region || "South America";
-    // Skin 3D de cuerpo completo (Frontal)
-    document.getElementById("playerBody").src = `https://mc-heads.net/body/${p.name}/right`;
-    document.getElementById("modalNameMC").href = `https://namemc.com/search?q=${p.name}`;
+    document.getElementById("playerAvatar").src = `https://mc-heads.net/body/${p.name}/right`;
     
-    const globalRank = allPlayers.findIndex(x => x.name === name) + 1;
-    document.getElementById("modalRankSide").innerText = `#${globalRank} Overall`;
-    document.getElementById("modalPoints").innerText = `${p.points} Points`;
+    const stats = document.getElementById("modalStats");
+    stats.innerHTML = "";
 
-    const statsContainer = document.getElementById("modalStats");
-    
-    // Tiers ordenados para el modal
-    let sortedTiers = modes
-        .map(m => ({ mode: m, rank: p[m] || 'None', pts: levelPoints[p[m]] || 0 }))
-        .filter(t => t.rank !== 'None')
-        .sort((a, b) => b.pts - a.pts);
-
-    statsContainer.innerHTML = sortedTiers.map(t => `
-        <div class="modal-tier-card border-${t.rank}">
-            <div class="m-icon">${modeIcons[t.mode]}</div>
-            <div class="m-mode-name">${t.mode.toUpperCase()}</div>
-            <div class="m-rank-val">${t.rank}</div>
-        </div>
-    `).join("");
+    Object.keys(modeIcons).forEach(m => {
+        if(p[m] && p[m] !== "None") {
+            stats.innerHTML += `
+                <div class="tier-circle border-${p[m]}" style="width:60px; height:60px;">
+                    <span style="font-size:1.5rem">${modeIcons[m]}</span>
+                    <span class="m-rank" style="font-size:0.8rem">${p[m]}</span>
+                </div>`;
+        }
+    });
 
     document.getElementById("playerModal").style.display = "flex";
 }
 
-function closeModal() {
-    document.getElementById("playerModal").style.display = "none";
-}
+function closeModal() { document.getElementById("playerModal").style.display = "none"; }
 
 loadData();
-
-// --- FUNCIONES ADMIN ---
-function tryLogin() {
-    if (document.getElementById("adminPassInput").value === ADMIN_KEY) {
-        document.getElementById("loginSection").style.display = "none";
-        document.getElementById("adminContent").style.display = "block";
-        loadData();
-    } else { alert("Clave incorrecta"); }
-}
-
-function renderAdmin() {
-    const list = document.getElementById("playersAdminList");
-    list.innerHTML = allPlayers.map(p => `
-        <div style="display:flex; justify-content:space-between; align-items:center; padding:15px; background:#161b22; border:1px solid #30363d; margin-top:8px; border-radius:8px;">
-            <b style="color:white">${p.name}</b>
-            <div style="display:flex; gap:10px;">
-                <button onclick="editPlayer('${p.name}')" class="btn-edit">Editar</button>
-                <button onclick="deletePlayer('${p.name}')" class="btn-delete">Borrar</button>
-            </div>
-        </div>`).join("");
-}
-
+// --- ACCIONES ADMIN ---
 async function addPlayer() {
-    const name = document.getElementById("playerName").value.trim();
-    if (!name) return;
-    await fetch(`${API}/player`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "admin-key": ADMIN_KEY },
-        body: JSON.stringify({ name, region: "SA" })
-    });
-    document.getElementById("playerName").value = "";
-    loadData();
+    const nameInput = document.getElementById("playerName");
+    const name = nameInput.value.trim();
+    if (!name) return alert("Escribí un nombre válido");
+
+    try {
+        await fetch(`${API}/player`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "admin-key": ADMIN_KEY },
+            body: JSON.stringify({ name, region: "None" })
+        });
+        nameInput.value = "";
+        loadData();
+    } catch (e) { alert("Error al conectar"); }
 }
 
 function editPlayer(name) {
     editingPlayer = name;
     const p = allPlayers.find(x => x.name === name);
-    let html = `<div style="grid-column: 1/-1; background:#0d1117; padding:10px; border-radius:8px; border:1px solid #30363d;">
-        <b style="color:#8b949e; font-size:10px;">REGION</b>
-        <select id="edit_region" style="width:100%; padding:5px; background:#161b22; color:white; border:none;">
+    if (!p) return;
+    document.getElementById("editName").innerText = p.name;
+    
+    let html = `<div style="grid-column: 1/-1; background:#21262d; padding:15px; border-radius:8px; margin-bottom:10px;">
+        <b style="color:#58a6ff;">REGIÓN</b>
+        <select id="edit_region" style="width:100%; background:#0d1117; color:white;">
             ${regions.map(r => `<option value="${r}" ${p.region === r ? 'selected':''}>${r}</option>`).join('')}
         </select></div>`;
 
@@ -163,25 +143,54 @@ function editPlayer(name) {
 async function saveEdit() {
     let data = { region: document.getElementById("edit_region").value };
     modes.forEach(m => data[m] = document.getElementById("edit_" + m).value);
-    await fetch(`${API}/player/${editingPlayer}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json", "admin-key": ADMIN_KEY },
-        body: JSON.stringify(data)
-    });
-    document.getElementById("editModal").style.display = "none";
-    loadData();
+
+    try {
+        await fetch(`${API}/player/${editingPlayer}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json", "admin-key": ADMIN_KEY },
+            body: JSON.stringify(data)
+        });
+        closeEditModal();
+        loadData();
+    } catch (e) { alert("Error al guardar"); }
 }
 
 function closeEditModal() { document.getElementById("editModal").style.display = "none"; }
 
 async function deletePlayer(name) {
-    if (!confirm(`¿Borrar a ${name}?`)) return;
-    await fetch(`${API}/player/${name}`, {
-        method: "DELETE",
-        headers: { "admin-key": ADMIN_KEY }
-    });
-    loadData();
+    if (!confirm(`¿Eliminar a ${name}?`)) return;
+    try {
+        await fetch(`${API}/player/${name}`, {
+            method: "DELETE",
+            headers: { "admin-key": ADMIN_KEY }
+        });
+        loadData();
+    } catch (e) { console.error(e); }
 }
 
-// Inicializar
 loadData();
+
+// --- SISTEMA DE LOGIN ---
+
+function tryLogin() {
+    const enteredPass = document.getElementById("adminPassInput").value;
+
+    if (enteredPass === ADMIN_KEY) {
+        // Mostramos el panel y ocultamos el login
+        document.getElementById("loginSection").style.display = "none";
+        document.getElementById("adminContent").style.display = "block";
+        loadData();
+    } else {
+        alert("Clave incorrecta");
+    }
+}
+
+// Inicialización
+function init() {
+    // Si NO hay panel de admin (estamos en el index), cargamos datos normal
+    if (!document.getElementById("playersAdmin")) {
+        loadData();
+    }
+}
+
+init();
