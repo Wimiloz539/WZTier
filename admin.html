@@ -6,24 +6,20 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
     <div id="loginSection" style="text-align: center; margin-top: 100px;">
         <h2>Panel de Control</h2>
-        <input type="password" id="adminPassInput" placeholder="Contraseña" style="padding: 10px; border-radius: 5px; border: 1px solid #30363d; background: #0d1117; color: white;">
+        <input type="password" id="adminPassInput" placeholder="Contraseña Admin" style="padding: 10px; border-radius: 5px; border: 1px solid #30363d; background: #0d1117; color: white;">
         <button onclick="tryLogin()" style="padding: 10px 20px; cursor: pointer;">Entrar</button>
     </div>
 
-    <div id="adminContent" style="display: none;">
+    <div id="adminContent" style="display: none; padding: 20px;">
         <h1>Admin Panel</h1>
-
         <div class="admin-controls">
             <input id="playerName" placeholder="Nombre jugador">
-            <button onclick="addPlayer()">Agregar</button>
+            <button onclick="addPlayer()" class="btn-add">Agregar</button>
         </div>
 
-        <h2>Jugadores</h2>
-
-        <table id="adminTable">
+        <table id="adminTable" style="margin-top: 20px;">
             <thead>
                 <tr>
                     <th>Nombre</th>
@@ -36,33 +32,12 @@
         </table>
 
         <div id="editModal" class="modal-overlay" style="display: none;">
-            <div class="rank-card">
+            <div class="rank-card" style="background:#161b22; padding:20px; border-radius:12px; border:1px solid #30363d; width:90%; max-width:500px;">
                 <button class="close-btn" onclick="closeEditModal()">&times;</button>
                 <h2 class="player-title">Editar: <span id="editName"></span></h2>
-                <div id="editModes" class="edit-grid"></div>
+                <div id="editModes" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;"></div>
                 <div style="margin-top: 20px;">
-                    <button class="btn-save" onclick="saveEdit()">Guardar Cambios</button>
-                </div>
-            </div>
-        </div>
-
-        <div id="playerModal" class="modal-overlay" style="display:none">
-            <div class="rank-card">
-                <div class="card-header">
-                    <h3>Información del Jugador</h3>
-                    <button class="close-btn" onclick="closeModal()">&times;</button>
-                </div>
-                <div class="card-body">
-                    <div class="player-avatar">
-                        <img id="playerAvatar" src="" alt="Skin">
-                    </div>
-                    <div class="player-info">
-                        <div class="main-info">
-                            <h2 id="modalName">Nombre</h2>
-                            <p class="overall-rank" id="modalRank">#? OVERALL</p>
-                        </div>
-                        <div id="modalStats" class="modes-grid"></div>
-                    </div>
+                    <button class="btn-save" onclick="saveEdit()" style="width:100%; padding:10px; background:#238636; color:white; border:none; border-radius:6px; cursor:pointer;">Guardar Cambios</button>
                 </div>
             </div>
         </div>
