@@ -1,17 +1,8 @@
 /* --- CONFIGURACIÓN GENERAL --- */
-:root {
-    --bg: #0d1117;
-    --card: #161b22;
-    --border: #30363d;
-    --text: #c9d1d9;
-    --accent: #58a6ff;
-    --gold: #8e6a00;
-}
-
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: var(--bg);
-    color: var(--text);
+    background: #0d1117; /* Fondo oscuro tipo GitHub/MCTiers */
+    color: #c9d1d9;
     text-align: center;
     margin: 0;
     padding: 20px;
@@ -23,31 +14,31 @@ table {
     border-collapse: collapse;
     width: 90%;
     max-width: 800px;
-    background: var(--card);
-    border: 1px solid var(--border);
+    background: #161b22;
+    border: 1px solid #30363d;
     border-radius: 8px;
     overflow: hidden;
 }
 
 th {
-    background: var(--bg);
-    color: var(--accent);
+    background: #0d1117;
+    color: #58a6ff;
     padding: 15px;
     font-size: 0.8rem;
     text-transform: uppercase;
-    border-bottom: 2px solid var(--border);
+    border-bottom: 2px solid #30363d;
 }
 
 td {
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid #30363d;
     padding: 12px;
 }
 
 /* --- BOTONES --- */
 button {
     background: #21262d;
-    color: var(--text);
-    border: 1px solid var(--border);
+    color: #c9d1d9;
+    border: 1px solid #30363d;
     padding: 6px 12px;
     border-radius: 6px;
     cursor: pointer;
@@ -72,21 +63,20 @@ button:hover {
     width: 100%; height: 100%;
     background: rgba(0, 0, 0, 0.85);
     backdrop-filter: blur(8px);
-    display: none;
+    display: none; /* Se activa con JS (flex) */
     justify-content: center;
     align-items: center;
     z-index: 1000;
 }
 
-.profile-card, .rank-card {
-    background: var(--bg);
-    border: 1px solid var(--border);
+.rank-card {
+    background: #0d1117;
+    border: 1px solid #30363d;
     border-radius: 12px;
     padding: 30px;
     width: 420px;
     position: relative;
     box-shadow: 0 10px 40px rgba(0,0,0,0.6);
-    text-align: center;
 }
 
 /* --- PERFIL DEL JUGADOR --- */
@@ -97,71 +87,81 @@ button:hover {
     color: #f0f6fc;
 }
 
-.profile-avatar-container {
-    height: 180px;
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-    margin-bottom: 15px;
+.region-text {
+    color: #8b949e;
+    font-size: 1rem;
+    margin-bottom: 20px;
+    display: block;
 }
 
-.profile-avatar-container img {
-    height: 100%;
-    object-fit: contain;
-}
-
-/* --- FILAS DE RANKING (NUEVO ESTILO) --- */
-.player-row {
-    display: flex;
-    align-items: center;
-    background: var(--card);
-    margin: 8px auto;
-    padding: 10px 20px;
-    border-radius: 8px;
-    max-width: 900px;
-    cursor: pointer;
-    border: 1px solid transparent;
-    transition: 0.2s;
-}
-
-.player-row:hover { border-color: var(--border); background: #1c2128; }
-
-.player-main-info { display: flex; align-items: center; gap: 12px; min-width: 250px; }
-.rank-index { font-weight: bold; font-size: 1.2rem; color: #484f58; width: 35px; text-align: left; }
-.p-icon { width: 35px; height: 35px; border-radius: 4px; }
-.name-box { display: flex; flex-direction: column; text-align: left; }
-.p-name { font-weight: bold; }
-.p-pts { font-size: 0.8rem; color: #8b949e; }
-
-/* --- TIERS CIRCULARES --- */
-.tiers-container { 
-    display: flex; 
-    gap: 8px; 
-    margin-left: auto; /* Al extremo derecho */
-}
-
-.tier-circle {
-    width: 42px;
-    height: 42px;
+.circular-avatar { margin-bottom: 20px; }
+.circular-avatar img {
+    width: 100px;
+    height: 100px;
     border-radius: 50%;
-    background: #0d1117;
-    border: 2px solid #21262d;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    border: 3px solid #30363d;
+    object-fit: cover;
 }
 
-.tier-circle.empty { border: 2px dashed #30363d; opacity: 0.3; }
-.m-icon { font-size: 0.9rem; margin-bottom: -2px; }
-.m-rank { font-size: 0.6rem; font-weight: bold; }
+/* --- CUADRO DE POSICIÓN (ESTILO IMAGEN) --- */
+.position-container {
+    display: inline-flex;
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 25px;
+    align-items: stretch;
+}
 
-/* Colores de Tiers */
-.border-HT1 { border-color: #ff4b4b; color: #ff4b4b; }
-.border-LT1 { border-color: #ff8c4b; color: #ff8c4b; }
-.border-HT2 { border-color: #ffeb3b; color: #ffeb3b; }
+.rank-side {
+    background: #30363d; /* Gris oscuro para el puesto */
+    color: white;
+    padding: 10px 20px;
+    font-weight: bold;
+    font-size: 1.4rem;
+    display: flex;
+    align-items: center;
+}
 
-/* --- PANEL DE EDICIÓN / ADMIN --- */
+.rank-side.gold {
+    background: #8e6a00; /* Color oro oscuro si es el #1 */
+}
+
+.info-side {
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: white;
+}
+
+.overall-label { font-weight: bold; }
+.points-text { color: #8b949e; font-size: 0.9rem; }
+
+/* --- GRID DE TIERS --- */
+#modalStats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.tier-item {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-align: left;
+}
+
+.tier-info-text { display: flex; flex-direction: column; }
+.tier-name { font-size: 0.65rem; color: #8b949e; text-transform: uppercase; }
+.tier-value { font-weight: bold; font-size: 1rem; color: #f0f6fc; }
+
+/* --- PANEL DE EDICIÓN --- */
 .edit-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -172,10 +172,10 @@ button:hover {
 }
 
 .modality {
-    background: var(--card);
+    background: #161b22;
     padding: 12px;
     border-radius: 8px;
-    border: 1px solid var(--border);
+    border: 1px solid #30363d;
     text-align: left;
 }
 
@@ -189,9 +189,9 @@ button:hover {
 
 .modality select {
     width: 100%;
-    background: var(--bg);
+    background: #0d1117;
     color: white;
-    border: 1px solid var(--border);
+    border: 1px solid #30363d;
     padding: 6px;
     border-radius: 4px;
 }
@@ -199,24 +199,22 @@ button:hover {
 /* --- OTROS --- */
 .close-btn {
     position: absolute;
-    top: 15px; right: 15px;
-    background: none; border: none;
-    color: #8b949e; font-size: 1.5rem; cursor: pointer;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    color: #8b949e;
+    font-size: 1.5rem;
+    cursor: pointer;
 }
+
 .close-btn:hover { color: #ff4b4b; }
 
-.region-tag {
-    background: #21262d;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 0.7rem;
-    font-weight: bold;
-    margin-left: 15px;
-}
-
-.tabs-container {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-    margin-bottom: 20px;
+.section-label {
+    font-size: 0.8rem;
+    color: #8b949e;
+    text-align: left;
+    margin: 15px 0 8px 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
