@@ -9,7 +9,6 @@ const levelPoints = {
     HT5: 2, LT5: 1, None: 0
 };
 
-// Mapeo de iconos (puedes cambiarlos por URLs de imágenes de items de MC)
 const modeIcons = {
     sword: "⚔️", axe: "🪓", crystal: "💎", uhc: "❤️", 
     smp: "🟢", nethpot: "🧪", diamondpot: "🛡️", mace: "🔨"
@@ -18,78 +17,61 @@ const modeIcons = {
 const modes = Object.keys(modeIcons);
 const regions = ["South America", "Europe", "North America", "Asia", "Africa", "Oceania"];
 
-// --- CARGA DE DATOS ---
 async function loadData() {
     try {
         const res = await fetch(`${API}/players`);
         allPlayers = await res.json();
         
-        // Si estamos en la página de Admin
-        if (document.getElementById("playersAdmin")) {
-            renderAdmin(allPlayers);
-        } else {
-            // Si estamos en el Index, refrescamos la pestaña actual
-            switchTab(currentTab);
-        }
+        // Renderizar según donde estemos
+        if (document.getElementById("playersAdmin")) renderAdmin(allPlayers);
+        switchTab(currentTab);
     } catch (e) {
         console.error("Error cargando datos:", e);
     }
 }
 
-// --- LÓGICA DE PESTAÑAS ---
 function switchTab(tab) {
     currentTab = tab;
-    
-    // Actualizar botones UI
     document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.tab === tab);
+        btn.classList.toggle('active', btn.getAttribute('onclick').includes(tab));
     });
 
     const container = document.getElementById("rankingContainer");
-    if (!container) return;
     container.innerHTML = "";
 
     if (tab === 'overall') {
-        renderOverall(allPlayers, container);
+        renderOverall(container);
     } else {
         renderModeColumns(tab, container);
     }
 }
 
-// --- RENDERIZADO GLOBAL (Línea Recta) ---
-function renderOverall(players, container) {
-    players.forEach((p, i) => {
+function renderOverall(container) {
+    allPlayers.forEach((p, i) => {
         const row = document.createElement("div");
-        row.className = "player-card";
+        row.className = "player-row";
         row.onclick = () => viewPlayer(p.name);
         
-        // Generamos la línea de tiers optimizada
         let tiersHtml = "";
         modes.forEach(m => {
             if (p[m] && p[m] !== "None") {
-                tiersHtml += `
-                    <div class="tier-pill">
-                        <span class="mode-icon">${modeIcons[m]}</span>
-                        <span class="tier-tag tier-${p[m]}">${p[m]}</span>
-                    </div>`;
+                tiersHtml += `<div class="tier-pill"><span class="tier-tag tier-${p[m]}">${p[m]}</span></div>`;
             }
         });
 
         row.innerHTML = `
             <div class="rank-num">#${i + 1}</div>
-            <img src="https://mc-heads.net/avatar/${p.name}/40" class="mini-avatar">
-            <div class="player-main">
+            <img src="https://mc-heads.net/avatar/${p.name}/32" class="mini-avatar">
+            <div class="player-info">
                 <span class="player-name">${p.name}</span>
                 <span class="player-points">${p.points || 0} pts</span>
             </div>
-            <div class="region-badge">${p.region || 'NA'}</div>
             <div class="linear-tiers">${tiersHtml}</div>
         `;
         container.appendChild(row);
     });
 }
 
-// --- RENDERIZADO POR MODALIDAD (Columnas) ---
 function renderModeColumns(mode, container) {
     const grid = document.createElement("div");
     grid.className = "tier-columns-grid";
@@ -99,9 +81,7 @@ function renderModeColumns(mode, container) {
         col.className = "tier-column";
         col.innerHTML = `<h3>Tier ${i}</h3>`;
         
-        const tierKey = `HT${i}`; // O LT según tu lógica, aquí filtramos si contiene el número
-        const filtered = allPlayers.filter(p => p[mode] && p[mode].includes(i));
-
+        const filtered = allPlayers.filter(p => p[mode] && p[mode].includes(i.toString()));
         filtered.forEach(p => {
             col.innerHTML += `
                 <div class="mini-player-card" onclick="viewPlayer('${p.name}')">
@@ -114,39 +94,132 @@ function renderModeColumns(mode, container) {
     container.appendChild(grid);
 }
 
-// --- PERFIL (MODAL OPTIMIZADO) ---
+// Perfil Modal
 async function viewPlayer(name) {
     const p = allPlayers.find(x => x.name === name);
     if (!p) return;
 
     document.getElementById("modalName").innerText = p.name;
-    document.getElementById("playerAvatar").src = `https://mc-heads.net/body/${p.name}/150`;
-
-    // Tiers en línea recta dentro del perfil
+    document.getElementById("playerAvatar").src = `https://mc-heads.net/body/${p.name}/120`;
+    
     const stats = document.getElementById("modalStats");
     stats.innerHTML = "";
-    stats.className = "linear-tiers-profile";
-
     modes.forEach(m => {
-        if (p[m] && p[m] !== "None") {
+        if(p[m] && p[m] !== "None") {
             stats.innerHTML += `
-                <div class="tier-pill-large">
-                    <span class="mode-icon">${modeIcons[m]}</span>
-                    <span class="mode-name">${m.toUpperCase()}</span>
+                <div class="tier-item">
+                    <span class="tier-name">${m.toUpperCase()}</span>
                     <span class="tier-tag tier-${p[m]}">${p[m]}</span>
                 </div>`;
         }
     });
-
     document.getElementById("playerModal").style.display = "flex";
 }
 
-// --- MANTENEMOS TUS FUNCIONES DE ADMIN IGUALES ---
-// (addPlayer, editPlayer, saveEdit, deletePlayer, tryLogin se mantienen igual que en tu código)
-// Solo asegúrate de llamar a loadData() al final de cada acción exitosa.
-
 function closeModal() { document.getElementById("playerModal").style.display = "none"; }
+
+// Lógica de Admin (Login y Edición)
+function tryLogin() {
+    if (document.getElementById("adminPassInput").value === ADMIN_KEY) {
+        document.getElementById("loginSection").style.display = "none";
+        document.getElementById("adminContent").style.display = "block";
+        loadData();
+    } else { alert("Clave incorrecta"); }
+}
+
+// Mantén tus funciones de addPlayer, editPlayer, saveEdit, deletePlayer igual que antes...
+// Pero asegúrate de que al final llamen a loadData();
+
+// --- ACCIONES ADMIN ---
+async function addPlayer() {
+    const nameInput = document.getElementById("playerName");
+    const name = nameInput.value.trim();
+    if (!name) return alert("Escribí un nombre válido");
+
+    try {
+        await fetch(`${API}/player`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "admin-key": ADMIN_KEY },
+            body: JSON.stringify({ name, region: "None" })
+        });
+        nameInput.value = "";
+        loadData();
+    } catch (e) { alert("Error al conectar"); }
+}
+
+function editPlayer(name) {
+    editingPlayer = name;
+    const p = allPlayers.find(x => x.name === name);
+    if (!p) return;
+    document.getElementById("editName").innerText = p.name;
+    
+    let html = `<div style="grid-column: 1/-1; background:#21262d; padding:15px; border-radius:8px; margin-bottom:10px;">
+        <b style="color:#58a6ff;">REGIÓN</b>
+        <select id="edit_region" style="width:100%; background:#0d1117; color:white;">
+            ${regions.map(r => `<option value="${r}" ${p.region === r ? 'selected':''}>${r}</option>`).join('')}
+        </select></div>`;
+
+    modes.forEach(m => {
+        html += `<div class="modality"><b>${m.toUpperCase()}</b>
+            <select id="edit_${m}">
+                ${Object.keys(levelPoints).map(lvl => `<option value="${lvl}" ${p[m]===lvl?'selected':''}>${lvl}</option>`).join('')}
+            </select></div>`;
+    });
+    document.getElementById("editModes").innerHTML = html;
+    document.getElementById("editModal").style.display = "flex";
+}
+
+async function saveEdit() {
+    let data = { region: document.getElementById("edit_region").value };
+    modes.forEach(m => data[m] = document.getElementById("edit_" + m).value);
+
+    try {
+        await fetch(`${API}/player/${editingPlayer}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json", "admin-key": ADMIN_KEY },
+            body: JSON.stringify(data)
+        });
+        closeEditModal();
+        loadData();
+    } catch (e) { alert("Error al guardar"); }
+}
+
 function closeEditModal() { document.getElementById("editModal").style.display = "none"; }
 
-// Inicialización
+async function deletePlayer(name) {
+    if (!confirm(`¿Eliminar a ${name}?`)) return;
+    try {
+        await fetch(`${API}/player/${name}`, {
+            method: "DELETE",
+            headers: { "admin-key": ADMIN_KEY }
+        });
+        loadData();
+    } catch (e) { console.error(e); }
+}
+
 loadData();
+
+// --- SISTEMA DE LOGIN ---
+
+function tryLogin() {
+    const enteredPass = document.getElementById("adminPassInput").value;
+
+    if (enteredPass === ADMIN_KEY) {
+        // Mostramos el panel y ocultamos el login
+        document.getElementById("loginSection").style.display = "none";
+        document.getElementById("adminContent").style.display = "block";
+        loadData();
+    } else {
+        alert("Clave incorrecta");
+    }
+}
+
+// Inicialización
+function init() {
+    // Si NO hay panel de admin (estamos en el index), cargamos datos normal
+    if (!document.getElementById("playersAdmin")) {
+        loadData();
+    }
+}
+
+init();
