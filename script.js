@@ -3,8 +3,9 @@ const API = "https://tiers.onrender.com";
 let allPlayers = [];
 let currentTab = 'overall';
 
+// Puntuación para ordenar de mayor a menor
 const levelPoints = {
-    HT1: 60, LT1: 45, HT2: 30, LT2: 20, HT3: 10, LT3: 6, HT4: 4, LT4: 3, HT5: 2, LT5: 1, None: 0
+    HT1: 100, LT1: 90, HT2: 80, LT2: 70, HT3: 60, LT3: 50, HT4: 40, LT4: 30, HT5: 20, LT5: 10, None: 0
 };
 
 const modeIcons = {
@@ -16,38 +17,37 @@ async function loadData() {
     try {
         const res = await fetch(`${API}/players`);
         allPlayers = await res.json();
-        switchTab(currentTab);
-    } catch (e) { console.error("Error:", e); }
+        renderRanking();
+    } catch (e) { console.error("Error cargando datos:", e); }
 }
 
 function switchTab(tab) {
     currentTab = tab;
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+    renderRanking();
+}
+
+function renderRanking() {
     const container = document.getElementById("rankingContainer");
     container.innerHTML = "";
 
-    if (tab === 'overall') {
-        renderOverall(container);
-    } else {
-        renderModeView(tab, container);
-    }
-}
+    // Ordenar jugadores por puntos totales
+    allPlayers.sort((a, b) => (b.points || 0) - (a.points || 0));
 
-function renderOverall(container) {
     allPlayers.forEach((p, i) => {
         const row = document.createElement("div");
         row.className = "player-row";
         row.onclick = () => viewPlayer(p.name);
 
-        // 1. Obtener todos los tiers que NO sean "None"
+        // Lógica de Tiers: Filtrar, Ordenar y Rellenar
         let activeTiers = Object.keys(modeIcons)
             .filter(m => p[m] && p[m] !== "None")
-            .map(m => ({ mode: m, rank: p[m], pts: levelPoints[p[m]] }));
-
-        // 2. Ordenar de mayor a menor puntaje
-        activeTiers.sort((a, b) => b.pts - a.pts);
+            .map(m => ({ mode: m, rank: p[m], pts: levelPoints[p[m]] }))
+            .sort((a, b) => b.pts - a.pts); // Ordenar de mayor a menor
 
         let tiersHtml = "";
-        // Renderizar activos
+        // 1. Dibujar tiers activos
         activeTiers.forEach(t => {
             tiersHtml += `
                 <div class="tier-circle border-${t.rank}">
@@ -56,19 +56,17 @@ function renderOverall(container) {
                 </div>`;
         });
 
-        // 3. Rellenar con círculos vacíos hasta completar 8 (o los que quieras)
+        // 2. Rellenar con círculos vacíos hasta 8
         for (let j = activeTiers.length; j < 8; j++) {
             tiersHtml += `<div class="tier-circle empty"></div>`;
         }
 
         row.innerHTML = `
-            <div class="player-main-info">
-                <span class="rank-index">#${i + 1}</span>
-                <img src="https://mc-heads.net/avatar/${p.name}/35" class="p-icon">
-                <div class="name-box">
-                    <span class="p-name">${p.name}</span>
-                    <span class="p-pts">${p.points || 0} pts</span>
-                </div>
+            <span class="rank-index">#${i + 1}</span>
+            <img src="https://mc-heads.net/avatar/${p.name}/40" class="p-icon">
+            <div class="name-box">
+                <span class="p-name">${p.name}</span>
+                <span class="p-pts">${p.points || 0} PTS</span>
             </div>
             <div class="region-tag">${p.region || 'NA'}</div>
             <div class="tiers-container">${tiersHtml}</div>
@@ -77,39 +75,36 @@ function renderOverall(container) {
     });
 }
 
-async function viewPlayer(name) {
+function viewPlayer(name) {
     const p = allPlayers.find(x => x.name === name);
     if (!p) return;
 
     document.getElementById("modalName").innerText = p.name;
-    // Usamos 'body' pero con un contenedor que no lo corte
     document.getElementById("playerAvatar").src = `https://mc-heads.net/body/${p.name}/right`;
     
     const stats = document.getElementById("modalStats");
     stats.innerHTML = "";
 
-    let activeTiers = Object.keys(modeIcons)
-        .filter(m => p[m] && p[m] !== "None")
-        .map(m => ({ mode: m, rank: p[m], pts: levelPoints[p[m]] }))
-        .sort((a, b) => b.pts - a.pts);
-
-    activeTiers.forEach(t => {
-        stats.innerHTML += `
-            <div class="tier-circle-large border-${t.rank}">
-                <div class="m-icon-large">${modeIcons[t.mode]}</div>
-                <div class="m-rank-large">${t.rank}</div>
-            </div>`;
+    Object.keys(modeIcons).forEach(m => {
+        if(p[m] && p[m] !== "None") {
+            stats.innerHTML += `
+                <div class="tier-circle border-${p[m]}" style="width:60px; height:60px;">
+                    <span style="font-size:1.5rem">${modeIcons[m]}</span>
+                    <span class="m-rank" style="font-size:0.8rem">${p[m]}</span>
+                </div>`;
+        }
     });
 
     document.getElementById("playerModal").style.display = "flex";
 }
 
 function closeModal() { document.getElementById("playerModal").style.display = "none"; }
+
 function tryLogin() {
     if (document.getElementById("adminPassInput").value === ADMIN_KEY) {
         document.getElementById("loginSection").style.display = "none";
         document.getElementById("adminContent").style.display = "block";
-    } else { alert("Error"); }
+    } else { alert("Clave incorrecta"); }
 }
 
 loadData();
