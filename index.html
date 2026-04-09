@@ -9,33 +9,20 @@
 <body>
     <div class="main-wrapper">
         <h1>WZTiers Ranking</h1>
-
         <div id="rankingContainer">
             </div>
-
-        <footer class="admin-footer">
-            <div id="loginSection">
-                <input type="password" id="adminPassInput" placeholder="Contraseña Admin">
-                <button onclick="tryLogin()">🔑 Acceder</button>
-            </div>
-            <div id="adminContent" style="display: none;">
-                <button onclick="openAddModal()" class="btn-add">+ Añadir Jugador</button>
-                <div id="playersAdminList"></div>
-            </div>
-        </footer>
     </div>
 
     <div id="playerModal" class="modal-overlay">
         <div class="profile-card-v2">
             <button class="close-btn-v2" onclick="closeModal()">&times;</button>
-            
             <div class="profile-header-v2">
                 <div class="circular-avatar-v2">
                     <img id="playerAvatar" src="" alt="Avatar">
                 </div>
                 <h2 id="modalName">Nombre</h2>
-                <div id="modalCombatRank" class="combat-rank-badge">Combat Master</div>
-                <div id="modalRegion" class="region-text-v2">North America</div>
+                <div class="combat-rank-badge">Combat Master</div>
+                <div id="modalRegion" class="region-text-v2">South America</div>
                 <a href="#" id="modalNameMC" class="namemc-btn" target="_blank">NameMC</a>
             </div>
 
@@ -48,15 +35,14 @@
                     <div class="overall-info-side">
                         <span class="p-trophy">🏆</span>
                         <span class="p-overall">OVERALL</span>
-                        <span id="modalPoints" class="p-points">(330 points)</span>
+                        <span id="modalPoints" class="p-points">(0 pts)</span>
                     </div>
                 </div>
             </div>
 
             <div class="profile-section">
                 <h3>TIERS</h3>
-                <div id="modalStats" class="tiers-row-horizontal">
-                    </div>
+                <div id="modalStats" class="tiers-row-horizontal"></div>
             </div>
         </div>
     </div>
