@@ -1,48 +1,34 @@
 const ADMIN_KEY = "WZ21TIERS539";
 const API = "https://tiers.onrender.com";
-let allPlayers = []; 
+let allPlayers = [];
 let currentTab = 'overall';
 
 const levelPoints = {
-    HT1: 60, LT1: 45, HT2: 30, LT2: 20,
-    HT3: 10, LT3: 6, HT4: 4, LT4: 3,
-    HT5: 2, LT5: 1, None: 0
+    HT1: 60, LT1: 45, HT2: 30, LT2: 20, HT3: 10, LT3: 6, HT4: 4, LT4: 3, HT5: 2, LT5: 1, None: 0
 };
 
 const modeIcons = {
-    sword: "⚔️", axe: "🪓", crystal: "💎", uhc: "❤️", 
-    smp: "🟢", nethpot: "🧪", diamondpot: "🛡️", mace: "🔨"
+    sword: "⚔️", vanilla: "📦", uhc: "❤️", pot: "🧪", 
+    smp: "🌍", axe: "🪓", mace: "🔨", crystal: "💎"
 };
-
-const modes = Object.keys(modeIcons);
-const regions = ["South America", "Europe", "North America", "Asia", "Africa", "Oceania"];
 
 async function loadData() {
     try {
         const res = await fetch(`${API}/players`);
         allPlayers = await res.json();
-        
-        // Renderizar según donde estemos
-        if (document.getElementById("playersAdmin")) renderAdmin(allPlayers);
         switchTab(currentTab);
-    } catch (e) {
-        console.error("Error cargando datos:", e);
-    }
+    } catch (e) { console.error("Error:", e); }
 }
 
 function switchTab(tab) {
     currentTab = tab;
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.getAttribute('onclick').includes(tab));
-    });
-
     const container = document.getElementById("rankingContainer");
     container.innerHTML = "";
 
     if (tab === 'overall') {
         renderOverall(container);
     } else {
-        renderModeColumns(tab, container);
+        renderModeView(tab, container);
     }
 }
 
@@ -51,85 +37,82 @@ function renderOverall(container) {
         const row = document.createElement("div");
         row.className = "player-row";
         row.onclick = () => viewPlayer(p.name);
-        
+
+        // 1. Obtener todos los tiers que NO sean "None"
+        let activeTiers = Object.keys(modeIcons)
+            .filter(m => p[m] && p[m] !== "None")
+            .map(m => ({ mode: m, rank: p[m], pts: levelPoints[p[m]] }));
+
+        // 2. Ordenar de mayor a menor puntaje
+        activeTiers.sort((a, b) => b.pts - a.pts);
+
         let tiersHtml = "";
-        modes.forEach(m => {
-            if (p[m] && p[m] !== "None") {
-                tiersHtml += `<div class="tier-pill"><span class="tier-tag tier-${p[m]}">${p[m]}</span></div>`;
-            }
+        // Renderizar activos
+        activeTiers.forEach(t => {
+            tiersHtml += `
+                <div class="tier-circle border-${t.rank}">
+                    <span class="m-icon">${modeIcons[t.mode]}</span>
+                    <span class="m-rank">${t.rank}</span>
+                </div>`;
         });
 
+        // 3. Rellenar con círculos vacíos hasta completar 8 (o los que quieras)
+        for (let j = activeTiers.length; j < 8; j++) {
+            tiersHtml += `<div class="tier-circle empty"></div>`;
+        }
+
         row.innerHTML = `
-            <div class="rank-num">#${i + 1}</div>
-            <img src="https://mc-heads.net/avatar/${p.name}/32" class="mini-avatar">
-            <div class="player-info">
-                <span class="player-name">${p.name}</span>
-                <span class="player-points">${p.points || 0} pts</span>
+            <div class="player-main-info">
+                <span class="rank-index">#${i + 1}</span>
+                <img src="https://mc-heads.net/avatar/${p.name}/35" class="p-icon">
+                <div class="name-box">
+                    <span class="p-name">${p.name}</span>
+                    <span class="p-pts">${p.points || 0} pts</span>
+                </div>
             </div>
-            <div class="linear-tiers">${tiersHtml}</div>
+            <div class="region-tag">${p.region || 'NA'}</div>
+            <div class="tiers-container">${tiersHtml}</div>
         `;
         container.appendChild(row);
     });
 }
 
-function renderModeColumns(mode, container) {
-    const grid = document.createElement("div");
-    grid.className = "tier-columns-grid";
-
-    for (let i = 1; i <= 5; i++) {
-        const col = document.createElement("div");
-        col.className = "tier-column";
-        col.innerHTML = `<h3>Tier ${i}</h3>`;
-        
-        const filtered = allPlayers.filter(p => p[mode] && p[mode].includes(i.toString()));
-        filtered.forEach(p => {
-            col.innerHTML += `
-                <div class="mini-player-card" onclick="viewPlayer('${p.name}')">
-                    <img src="https://mc-heads.net/avatar/${p.name}/24">
-                    <span>${p.name}</span>
-                </div>`;
-        });
-        grid.appendChild(col);
-    }
-    container.appendChild(grid);
-}
-
-// Perfil Modal
 async function viewPlayer(name) {
     const p = allPlayers.find(x => x.name === name);
     if (!p) return;
 
     document.getElementById("modalName").innerText = p.name;
-    document.getElementById("playerAvatar").src = `https://mc-heads.net/body/${p.name}/120`;
+    // Usamos 'body' pero con un contenedor que no lo corte
+    document.getElementById("playerAvatar").src = `https://mc-heads.net/body/${p.name}/right`;
     
     const stats = document.getElementById("modalStats");
     stats.innerHTML = "";
-    modes.forEach(m => {
-        if(p[m] && p[m] !== "None") {
-            stats.innerHTML += `
-                <div class="tier-item">
-                    <span class="tier-name">${m.toUpperCase()}</span>
-                    <span class="tier-tag tier-${p[m]}">${p[m]}</span>
-                </div>`;
-        }
+
+    let activeTiers = Object.keys(modeIcons)
+        .filter(m => p[m] && p[m] !== "None")
+        .map(m => ({ mode: m, rank: p[m], pts: levelPoints[p[m]] }))
+        .sort((a, b) => b.pts - a.pts);
+
+    activeTiers.forEach(t => {
+        stats.innerHTML += `
+            <div class="tier-circle-large border-${t.rank}">
+                <div class="m-icon-large">${modeIcons[t.mode]}</div>
+                <div class="m-rank-large">${t.rank}</div>
+            </div>`;
     });
+
     document.getElementById("playerModal").style.display = "flex";
 }
 
 function closeModal() { document.getElementById("playerModal").style.display = "none"; }
-
-// Lógica de Admin (Login y Edición)
 function tryLogin() {
     if (document.getElementById("adminPassInput").value === ADMIN_KEY) {
         document.getElementById("loginSection").style.display = "none";
         document.getElementById("adminContent").style.display = "block";
-        loadData();
-    } else { alert("Clave incorrecta"); }
+    } else { alert("Error"); }
 }
 
-// Mantén tus funciones de addPlayer, editPlayer, saveEdit, deletePlayer igual que antes...
-// Pero asegúrate de que al final llamen a loadData();
-
+loadData();
 // --- ACCIONES ADMIN ---
 async function addPlayer() {
     const nameInput = document.getElementById("playerName");
