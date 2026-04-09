@@ -2,38 +2,33 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>WZTiers | Admin Panel</title>
+    <title>WZTiers | Admin</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="main-wrapper">
-        <h1>Admin Dashboard</h1>
-        
-        <div id="loginSection" style="margin-bottom: 30px;">
-            <input type="password" id="adminPassInput" placeholder="Contraseña Admin">
-            <button onclick="tryLogin()">🔑 Acceder</button>
+        <h1>Admin Panel</h1>
+        <div id="login">
+            <input type="password" id="pass" placeholder="Password">
+            <button onclick="auth()">Entrar</button>
         </div>
-
-        <div id="adminContent" style="display: none;">
-            <div style="background: #161b22; padding: 20px; border-radius: 12px; border: 1px solid #30363d; margin-bottom: 20px;">
-                <input type="text" id="playerName" placeholder="Nombre del Jugador">
-                <button onclick="addPlayer()" class="btn-add">Añadir Nuevo</button>
+        <div id="panel" style="display:none;">
+            <div class="admin-add">
+                <input type="text" id="newPlayer" placeholder="Minecraft Name">
+                <button onclick="addPlayer()">Agregar</button>
             </div>
-            <div id="playersAdminList"></div>
+            <div id="adminList"></div>
         </div>
     </div>
-
-    <div id="editModal" class="modal-overlay">
-        <div class="rank-card">
-            <h2 id="editName" style="margin-top:0">Editar</h2>
-            <div id="editModes" class="edit-grid"></div>
-            <div style="margin-top:20px; display:flex; gap:10px;">
-                <button onclick="saveEdit()" class="btn-edit" style="flex:1">Guardar</button>
-                <button onclick="closeEditModal()" style="flex:1">Cancelar</button>
-            </div>
-        </div>
-    </div>
-
-    <script src="script.js"></script>
+    <script>
+        const KEY = "WZ21TIERS539";
+        function auth() {
+            if(document.getElementById("pass").value === KEY) {
+                document.getElementById("login").style.display="none";
+                document.getElementById("panel").style.display="block";
+                // Aquí podés reusar funciones de carga de script.js
+            }
+        }
+    </script>
 </body>
 </html>
