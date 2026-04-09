@@ -10,48 +10,53 @@
     <div class="main-wrapper">
         <h1>WZTiers Ranking</h1>
 
-        <nav class="tabs-container">
-            <button class="tab-btn active" onclick="switchTab('overall')">🏆 Overall</button>
-            <button class="tab-btn" onclick="switchTab('sword')">⚔️ Sword</button>
-            <button class="tab-btn" onclick="switchTab('vanilla')">📦 Vanilla</button>
-            <button class="tab-btn" onclick="switchTab('uhc')">❤️ UHC</button>
-            <button class="tab-btn" onclick="switchTab('pot')">🧪 Pot</button>
-            <button class="tab-btn" onclick="switchTab('smp')">🌍 SMP</button>
-            <button class="tab-btn" onclick="switchTab('axe')">🪓 Axe</button>
-            <button class="tab-btn" onclick="switchTab('mace')">🔨 Mace</button>
-        </nav>
-
-        <div id="rankingContainer"></div>
+        <div id="rankingContainer">
+            </div>
 
         <footer class="admin-footer">
             <div id="loginSection">
                 <input type="password" id="adminPassInput" placeholder="Contraseña Admin">
                 <button onclick="tryLogin()">🔑 Acceder</button>
             </div>
-            
             <div id="adminContent" style="display: none;">
-                <div class="admin-controls">
-                    <input type="text" id="playerName" placeholder="Nombre del jugador">
-                    <button onclick="addPlayer()" class="btn-add">Añadir Jugador</button>
-                </div>
+                <button onclick="openAddModal()" class="btn-add">+ Añadir Jugador</button>
                 <div id="playersAdminList"></div>
             </div>
         </footer>
     </div>
 
     <div id="playerModal" class="modal-overlay">
-        <div class="profile-card">
-            <button class="close-btn" onclick="closeModal()">&times;</button>
-            <div class="profile-header">
-                <div class="profile-avatar-container">
-                    <img id="playerAvatar" src="" alt="Skin">
+        <div class="profile-card-v2">
+            <button class="close-btn-v2" onclick="closeModal()">&times;</button>
+            
+            <div class="profile-header-v2">
+                <div class="circular-avatar-v2">
+                    <img id="playerAvatar" src="" alt="Avatar">
                 </div>
                 <h2 id="modalName">Nombre</h2>
-                <div id="modalRegionTag" class="region-badge-large">NA</div>
+                <div id="modalCombatRank" class="combat-rank-badge">Combat Master</div>
+                <div id="modalRegion" class="region-text-v2">North America</div>
+                <a href="#" id="modalNameMC" class="namemc-btn" target="_blank">NameMC</a>
             </div>
-            <div class="profile-body">
-                <p class="section-title">ESTADÍSTICAS DE TIER</p>
-                <div id="modalStats" class="tiers-row-profile"></div>
+
+            <div class="profile-section">
+                <h3>POSITION</h3>
+                <div class="position-gold-container">
+                    <div class="gold-rank-side">
+                        <span id="modalRankSide">1.</span>
+                    </div>
+                    <div class="overall-info-side">
+                        <span class="p-trophy">🏆</span>
+                        <span class="p-overall">OVERALL</span>
+                        <span id="modalPoints" class="p-points">(330 points)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-section">
+                <h3>TIERS</h3>
+                <div id="modalStats" class="tiers-row-horizontal">
+                    </div>
             </div>
         </div>
     </div>
