@@ -312,3 +312,99 @@ body {
 .tier-columns-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; }
 .tier-column { background: #161b22; padding: 10px; border-radius: 10px; }
 .mini-player-card { display: flex; align-items: center; gap: 10px; padding: 5px; cursor: pointer; }
+
+:root {
+    --bg: #0d1117;
+    --card: #161b22;
+    --border: #30363d;
+    --text: #c9d1d9;
+    --accent: #58a6ff;
+}
+
+body { background: var(--bg); color: var(--text); font-family: sans-serif; }
+
+.player-row {
+    display: flex;
+    align-items: center;
+    background: var(--card);
+    margin-bottom: 6px;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.2s;
+    border: 1px solid transparent;
+}
+
+.player-row:hover { border-color: var(--border); background: #1c2128; }
+
+/* Alineación de nombre fija */
+.player-main-info { display: flex; align-items: center; width: 250px; gap: 12px; }
+.name-box { display: flex; flex-direction: column; text-align: left; }
+.p-name { font-weight: bold; font-size: 1.1rem; }
+.p-pts { font-size: 0.8rem; color: #8b949e; }
+
+/* Tiers Circulares */
+.tiers-container { display: flex; gap: 6px; margin-left: auto; }
+
+.tier-circle {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: #0d1117;
+    border: 2px solid #21262d;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.6rem;
+}
+
+.tier-circle.empty { border: 2px dashed #21262d; background: transparent; opacity: 0.3; }
+
+.m-icon { font-size: 0.9rem; margin-bottom: -2px; }
+.m-rank { font-weight: bold; }
+
+/* Colores de Borde por Rango */
+.border-HT1 { border-color: #ff4b4b; color: #ff4b4b; }
+.border-LT1 { border-color: #ff8c4b; color: #ff8c4b; }
+.border-HT2 { border-color: #ffeb3b; color: #ffeb3b; }
+
+/* Perfil Modal - Fix Avatar */
+.profile-card {
+    background: var(--bg);
+    padding: 30px;
+    border-radius: 15px;
+    border: 1px solid var(--border);
+    width: 450px;
+    text-align: center;
+    position: relative;
+}
+
+.profile-avatar-container {
+    height: 180px; /* Espacio para el cuerpo sin corte */
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    margin-bottom: 15px;
+}
+
+.profile-avatar-container img {
+    height: 100%;
+    object-fit: contain; /* Evita que se corte */
+}
+
+.tiers-row-profile {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 15px;
+}
+
+.region-tag {
+    background: #21262d;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: bold;
+}
