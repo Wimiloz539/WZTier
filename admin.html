@@ -2,33 +2,72 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>WZTiers | Admin</title>
+    <title>Admin Panel</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="main-wrapper">
-        <h1>Admin Panel</h1>
-        <div id="login">
-            <input type="password" id="pass" placeholder="Password">
-            <button onclick="auth()">Entrar</button>
-        </div>
-        <div id="panel" style="display:none;">
-            <div class="admin-add">
-                <input type="text" id="newPlayer" placeholder="Minecraft Name">
-                <button onclick="addPlayer()">Agregar</button>
-            </div>
-            <div id="adminList"></div>
-        </div>
+
+    <div id="loginSection" style="text-align: center; margin-top: 100px;">
+        <h2>Panel de Control</h2>
+        <input type="password" id="adminPassInput" placeholder="Contraseña" style="padding: 10px; border-radius: 5px; border: 1px solid #30363d; background: #0d1117; color: white;">
+        <button onclick="tryLogin()" style="padding: 10px 20px; cursor: pointer;">Entrar</button>
     </div>
-    <script>
-        const KEY = "WZ21TIERS539";
-        function auth() {
-            if(document.getElementById("pass").value === KEY) {
-                document.getElementById("login").style.display="none";
-                document.getElementById("panel").style.display="block";
-                // Aquí podés reusar funciones de carga de script.js
-            }
-        }
-    </script>
+
+    <div id="adminContent" style="display: none;">
+        <h1>Admin Panel</h1>
+
+        <div class="admin-controls">
+            <input id="playerName" placeholder="Nombre jugador">
+            <button onclick="addPlayer()">Agregar</button>
+        </div>
+
+        <h2>Jugadores</h2>
+
+        <table id="adminTable">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Región</th> 
+                    <th>Editar</th>
+                    <th>Eliminar</th>
+                </tr>
+            </thead>
+            <tbody id="playersAdmin"></tbody>
+        </table>
+
+        <div id="editModal" class="modal-overlay" style="display: none;">
+            <div class="rank-card">
+                <button class="close-btn" onclick="closeEditModal()">&times;</button>
+                <h2 class="player-title">Editar: <span id="editName"></span></h2>
+                <div id="editModes" class="edit-grid"></div>
+                <div style="margin-top: 20px;">
+                    <button class="btn-save" onclick="saveEdit()">Guardar Cambios</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="playerModal" class="modal-overlay" style="display:none">
+            <div class="rank-card">
+                <div class="card-header">
+                    <h3>Información del Jugador</h3>
+                    <button class="close-btn" onclick="closeModal()">&times;</button>
+                </div>
+                <div class="card-body">
+                    <div class="player-avatar">
+                        <img id="playerAvatar" src="" alt="Skin">
+                    </div>
+                    <div class="player-info">
+                        <div class="main-info">
+                            <h2 id="modalName">Nombre</h2>
+                            <p class="overall-rank" id="modalRank">#? OVERALL</p>
+                        </div>
+                        <div id="modalStats" class="modes-grid"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> 
+
+    <script src="script.js"></script>
 </body>
 </html>
