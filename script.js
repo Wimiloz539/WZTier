@@ -1,11 +1,9 @@
 const ADMIN_KEY = "WZ21TIERS539";
 const API = "https://tiers.onrender.com";
 let allPlayers = [];
-let currentTab = 'overall';
 
-// Puntuación para ordenar de mayor a menor
 const levelPoints = {
-    HT1: 100, LT1: 90, HT2: 80, LT2: 70, HT3: 60, LT3: 50, HT4: 40, LT4: 30, HT5: 20, LT5: 10, None: 0
+    HT1: 60, LT1: 45, HT2: 30, LT2: 20, HT3: 10, LT3: 6, HT4: 4, LT4: 3, HT5: 2, LT5: 1, None: 0
 };
 
 const modeIcons = {
@@ -13,94 +11,51 @@ const modeIcons = {
     smp: "🌍", axe: "🪓", mace: "🔨", crystal: "💎"
 };
 
-async function loadData() {
-    try {
-        const res = await fetch(`${API}/players`);
-        allPlayers = await res.json();
-        renderRanking();
-    } catch (e) { console.error("Error cargando datos:", e); }
-}
+// ... (loadData, switchTab, renderOverall se mantienen igual que en tu código actual)
 
-function switchTab(tab) {
-    currentTab = tab;
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    event.target.classList.add('active');
-    renderRanking();
-}
-
-function renderRanking() {
-    const container = document.getElementById("rankingContainer");
-    container.innerHTML = "";
-
-    // Ordenar jugadores por puntos totales
-    allPlayers.sort((a, b) => (b.points || 0) - (a.points || 0));
-
-    allPlayers.forEach((p, i) => {
-        const row = document.createElement("div");
-        row.className = "player-row";
-        row.onclick = () => viewPlayer(p.name);
-
-        // Lógica de Tiers: Filtrar, Ordenar y Rellenar
-        let activeTiers = Object.keys(modeIcons)
-            .filter(m => p[m] && p[m] !== "None")
-            .map(m => ({ mode: m, rank: p[m], pts: levelPoints[p[m]] }))
-            .sort((a, b) => b.pts - a.pts); // Ordenar de mayor a menor
-
-        let tiersHtml = "";
-        // 1. Dibujar tiers activos
-        activeTiers.forEach(t => {
-            tiersHtml += `
-                <div class="tier-circle border-${t.rank}">
-                    <span class="m-icon">${modeIcons[t.mode]}</span>
-                    <span class="m-rank">${t.rank}</span>
-                </div>`;
-        });
-
-        // 2. Rellenar con círculos vacíos hasta 8
-        for (let j = activeTiers.length; j < 8; j++) {
-            tiersHtml += `<div class="tier-circle empty"></div>`;
-        }
-
-        row.innerHTML = `
-            <span class="rank-index">#${i + 1}</span>
-            <img src="https://mc-heads.net/avatar/${p.name}/40" class="p-icon">
-            <div class="name-box">
-                <span class="p-name">${p.name}</span>
-                <span class="p-pts">${p.points || 0} PTS</span>
-            </div>
-            <div class="region-tag">${p.region || 'NA'}</div>
-            <div class="tiers-container">${tiersHtml}</div>
-        `;
-        container.appendChild(row);
-    });
-}
-
-function viewPlayer(name) {
+async function viewPlayer(name) {
     const p = allPlayers.find(x => x.name === name);
     if (!p) return;
 
+    // 1. Datos Básicos
     document.getElementById("modalName").innerText = p.name;
-    document.getElementById("playerAvatar").src = `https://mc-heads.net/body/${p.name}/right`;
-    
+    document.getElementById("modalRegion").innerText = p.region || "No Region";
+    document.getElementById("playerAvatar").src = `https://mc-heads.net/avatar/${p.name}/120`;
+    document.getElementById("modalNameMC").href = `https://namemc.com/search?q=${p.name}`;
+
+    // 2. Datos de Posición y Puntos (Cuadro Dorado)
+    const pIndex = allPlayers.findIndex(x => x.name === name);
+    document.getElementById("modalRankSide").innerText = `${pIndex + 1}.`;
+    document.getElementById("modalPoints").innerText = `(${p.points || 0} points)`;
+
+    // 3. Tiers Horizontales y Ordenados
     const stats = document.getElementById("modalStats");
     stats.innerHTML = "";
 
-    Object.keys(modeIcons).forEach(m => {
-        if(p[m] && p[m] !== "None") {
-            stats.innerHTML += `
-                <div class="tier-circle border-${p[m]}" style="width:60px; height:60px;">
-                    <span style="font-size:1.5rem">${modeIcons[m]}</span>
-                    <span class="m-rank" style="font-size:0.8rem">${p[m]}</span>
-                </div>`;
-        }
+    let activeTiers = Object.keys(modeIcons)
+        .filter(m => p[m] && p[m] !== "None")
+        .map(m => ({ mode: m, rank: p[m], pts: levelPoints[p[m]] }))
+        .sort((a, b) => b.pts - a.pts);
+
+    activeTiers.forEach(t => {
+        stats.innerHTML += `
+            <div class="tier-circle-v2 border-v2-${t.rank}">
+                <span class="m-icon-v2">${modeIcons[t.mode]}</span>
+                <span class="m-rank-v2">${t.rank}</span>
+            </div>`;
     });
+
+    // 4. Llenar vacíos con círculos vacíos
+    for (let j = activeTiers.length; j < 8; j++) {
+        stats.innerHTML += `<div class="tier-circle-v2 empty-v2"></div>`;
+    }
 
     document.getElementById("playerModal").style.display = "flex";
 }
 
 function closeModal() { document.getElementById("playerModal").style.display = "none"; }
-
 loadData();
+
 // --- ACCIONES ADMIN ---
 async function addPlayer() {
     const nameInput = document.getElementById("playerName");
