@@ -21,8 +21,7 @@
             <button class="tab-btn" onclick="switchTab('mace')">🔨 Mace</button>
         </nav>
 
-        <div id="rankingContainer">
-            </div>
+        <div id="rankingContainer"></div>
 
         <footer class="admin-footer">
             <div id="loginSection">
@@ -31,7 +30,10 @@
             </div>
             
             <div id="adminContent" style="display: none;">
-                <button onclick="openAddModal()" class="btn-add">+ Añadir Jugador</button>
+                <div class="admin-controls">
+                    <input type="text" id="playerName" placeholder="Nombre del jugador">
+                    <button onclick="addPlayer()" class="btn-add">Añadir Jugador</button>
+                </div>
                 <div id="playersAdminList"></div>
             </div>
         </footer>
@@ -48,7 +50,7 @@
                 <div id="modalRegionTag" class="region-badge-large">NA</div>
             </div>
             <div class="profile-body">
-                <p class="section-title">TIERS</p>
+                <p class="section-title">ESTADÍSTICAS DE TIER</p>
                 <div id="modalStats" class="tiers-row-profile"></div>
             </div>
         </div>
