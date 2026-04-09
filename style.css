@@ -283,3 +283,32 @@ body {
 /* Modal */
 .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); }
 .modal-content { background: var(--bg-color); margin: 10% auto; padding: 20px; width: 50%; border-radius: 12px; border: 1px solid var(--accent); }
+
+/* Pestañas */
+.tabs { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 20px; }
+.tab-btn { background: #161b22; border: 1px solid #30363d; padding: 10px 20px; color: #8b949e; border-radius: 8px; cursor: pointer; }
+.tab-btn.active { border-color: #58a6ff; color: white; background: #21262d; }
+
+/* Fila de Jugador en línea recta */
+.player-row {
+    display: flex; 
+    align-items: center; 
+    background: #161b22; 
+    margin-bottom: 8px; 
+    padding: 10px 20px; 
+    border-radius: 8px; 
+    cursor: pointer;
+    border: 1px solid transparent;
+}
+.player-row:hover { border-color: #30363d; }
+.linear-tiers { display: flex; gap: 8px; margin-left: auto; }
+
+/* Colores de Tiers */
+.tier-HT1 { color: #ff4b4b; font-weight: bold; }
+.tier-LT1 { color: #ffa33f; }
+.tier-HT2 { color: #ffeb3b; }
+
+/* Columnas */
+.tier-columns-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; }
+.tier-column { background: #161b22; padding: 10px; border-radius: 10px; }
+.mini-player-card { display: flex; align-items: center; gap: 10px; padding: 5px; cursor: pointer; }
