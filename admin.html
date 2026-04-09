@@ -2,71 +2,37 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Admin Panel</title>
+    <title>WZTiers | Admin Panel</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div class="main-wrapper">
+        <h1>Admin Dashboard</h1>
+        
+        <div id="loginSection" style="margin-bottom: 30px;">
+            <input type="password" id="adminPassInput" placeholder="Contraseña Admin">
+            <button onclick="tryLogin()">🔑 Acceder</button>
+        </div>
 
-    <div id="loginSection" style="text-align: center; margin-top: 100px;">
-        <h2>Panel de Control</h2>
-        <input type="password" id="adminPassInput" placeholder="Contraseña" style="padding: 10px; border-radius: 5px; border: 1px solid #30363d; background: #0d1117; color: white;">
-        <button onclick="tryLogin()" style="padding: 10px 20px; cursor: pointer;">Entrar</button>
+        <div id="adminContent" style="display: none;">
+            <div style="background: #161b22; padding: 20px; border-radius: 12px; border: 1px solid #30363d; margin-bottom: 20px;">
+                <input type="text" id="playerName" placeholder="Nombre del Jugador">
+                <button onclick="addPlayer()" class="btn-add">Añadir Nuevo</button>
+            </div>
+            <div id="playersAdminList"></div>
+        </div>
     </div>
 
-    <div id="adminContent" style="display: none;">
-        <h1>Admin Panel</h1>
-
-        <div class="admin-controls">
-            <input id="playerName" placeholder="Nombre jugador">
-            <button onclick="addPlayer()">Agregar</button>
-        </div>
-
-        <h2>Jugadores</h2>
-
-        <table id="adminTable">
-            <thead>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Región</th> 
-                    <th>Editar</th>
-                    <th>Eliminar</th>
-                </tr>
-            </thead>
-            <tbody id="playersAdmin"></tbody>
-        </table>
-
-        <div id="editModal" class="modal-overlay" style="display: none;">
-            <div class="rank-card">
-                <button class="close-btn" onclick="closeEditModal()">&times;</button>
-                <h2 class="player-title">Editar: <span id="editName"></span></h2>
-                <div id="editModes" class="edit-grid"></div>
-                <div style="margin-top: 20px;">
-                    <button class="btn-save" onclick="saveEdit()">Guardar Cambios</button>
-                </div>
+    <div id="editModal" class="modal-overlay">
+        <div class="rank-card">
+            <h2 id="editName" style="margin-top:0">Editar</h2>
+            <div id="editModes" class="edit-grid"></div>
+            <div style="margin-top:20px; display:flex; gap:10px;">
+                <button onclick="saveEdit()" class="btn-edit" style="flex:1">Guardar</button>
+                <button onclick="closeEditModal()" style="flex:1">Cancelar</button>
             </div>
         </div>
-
-        <div id="playerModal" class="modal-overlay" style="display:none">
-            <div class="rank-card">
-                <div class="card-header">
-                    <h3>Información del Jugador</h3>
-                    <button class="close-btn" onclick="closeModal()">&times;</button>
-                </div>
-                <div class="card-body">
-                    <div class="player-avatar">
-                        <img id="playerAvatar" src="" alt="Skin">
-                    </div>
-                    <div class="player-info">
-                        <div class="main-info">
-                            <h2 id="modalName">Nombre</h2>
-                            <p class="overall-rank" id="modalRank">#? OVERALL</p>
-                        </div>
-                        <div id="modalStats" class="modes-grid"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> 
+    </div>
 
     <script src="script.js"></script>
 </body>
