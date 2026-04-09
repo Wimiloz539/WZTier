@@ -1,162 +1,222 @@
-/* --- VARIABLES Y RESET --- */
+/* --- CONFIGURACIÓN GENERAL --- */
 :root {
     --bg: #0d1117;
     --card: #161b22;
     --border: #30363d;
     --text: #c9d1d9;
     --accent: #58a6ff;
-    --gold: #f1c40f;
-    --ht1: #ff4b4b;
-    --lt1: #ff8c4b;
-    --ht2: #ffeb3b;
-    --lt2: #cddc39;
-    --ht3: #4caf50;
+    --gold: #8e6a00;
 }
 
 body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: var(--bg);
     color: var(--text);
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    text-align: center;
     margin: 0;
     padding: 20px;
-    text-align: center;
 }
 
-.main-wrapper {
-    max-width: 1100px;
-    margin: 0 auto;
-}
-
-h1 {
-    margin-bottom: 30px;
-    font-weight: 800;
-    letter-spacing: -1px;
-}
-
-/* --- NAVEGACIÓN (TABS) --- */
-.tabs-container {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 25px;
-    overflow-x: auto;
-    padding-bottom: 10px;
-    justify-content: center;
-}
-
-.tab-btn {
+/* --- TABLA PRINCIPAL --- */
+table {
+    margin: 20px auto;
+    border-collapse: collapse;
+    width: 90%;
+    max-width: 800px;
     background: var(--card);
     border: 1px solid var(--border);
-    color: #8b949e;
-    padding: 10px 18px;
     border-radius: 8px;
+    overflow: hidden;
+}
+
+th {
+    background: var(--bg);
+    color: var(--accent);
+    padding: 15px;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    border-bottom: 2px solid var(--border);
+}
+
+td {
+    border-bottom: 1px solid var(--border);
+    padding: 12px;
+}
+
+/* --- BOTONES --- */
+button {
+    background: #21262d;
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 6px 12px;
+    border-radius: 6px;
     cursor: pointer;
-    font-weight: 600;
-    white-space: nowrap;
     transition: 0.2s;
 }
 
-.tab-btn.active {
-    border-color: var(--accent);
-    color: white;
-    background: #21262d;
-}
-
-.tab-btn:hover:not(.active) {
+button:hover {
     background: #30363d;
+    border-color: #8b949e;
 }
 
-/* --- LISTA DE JUGADORES (RANKING) --- */
+.btn-edit { background-color: #2ea44f; color: white; border: none; }
+.btn-edit:hover { background-color: #2c974b; }
+
+.btn-delete { background-color: #da3633; color: white; border: none; }
+.btn-delete:hover { background-color: #b62320; }
+
+/* --- MODAL (OVERLAY) --- */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.profile-card, .rank-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 30px;
+    width: 420px;
+    position: relative;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+    text-align: center;
+}
+
+/* --- PERFIL DEL JUGADOR --- */
+#modalName {
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 10px 0 5px 0;
+    color: #f0f6fc;
+}
+
+.profile-avatar-container {
+    height: 180px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    margin-bottom: 15px;
+}
+
+.profile-avatar-container img {
+    height: 100%;
+    object-fit: contain;
+}
+
+/* --- FILAS DE RANKING (NUEVO ESTILO) --- */
 .player-row {
     display: flex;
     align-items: center;
     background: var(--card);
-    margin-bottom: 8px;
-    padding: 12px 20px;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    border: 1px solid transparent;
-}
-
-.player-row:hover {
-    border-color: #444;
-    background: #1c2128;
-    transform: translateX(5px);
-}
-
-.rank-index {
-    width: 45px;
-    font-weight: 900;
-    font-size: 1.2rem;
-    color: #484f58;
-    font-style: italic;
-    text-align: left;
-}
-
-.player-row:nth-child(1) .rank-index { color: var(--gold); }
-
-.p-icon {
-    width: 42px;
-    height: 42px;
+    margin: 8px auto;
+    padding: 10px 20px;
     border-radius: 8px;
-    margin-right: 15px;
-    border: 1px solid var(--border);
-    object-fit: cover;
+    max-width: 900px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: 0.2s;
 }
 
-.name-box {
-    display: flex;
-    flex-direction: column;
-    text-align: left;
-    min-width: 160px;
-}
+.player-row:hover { border-color: var(--border); background: #1c2128; }
 
-.p-name {
-    font-weight: bold;
-    font-size: 1.1rem;
-    color: #f0f6fc;
-}
+.player-main-info { display: flex; align-items: center; gap: 12px; min-width: 250px; }
+.rank-index { font-weight: bold; font-size: 1.2rem; color: #484f58; width: 35px; text-align: left; }
+.p-icon { width: 35px; height: 35px; border-radius: 4px; }
+.name-box { display: flex; flex-direction: column; text-align: left; }
+.p-name { font-weight: bold; }
+.p-pts { font-size: 0.8rem; color: #8b949e; }
 
-.p-pts {
-    font-size: 0.8rem;
-    color: #8b949e;
-}
-
-.region-tag {
-    background: #21262d;
-    padding: 4px 10px;
-    border-radius: 6px;
-    font-size: 0.75rem;
-    font-weight: 800;
-    margin-left: 20px;
-    color: var(--accent);
-}
-
-/* --- CONTENEDOR DE TIERS CIRCULARES --- */
-.tiers-container {
-    display: flex;
-    gap: 8px;
-    margin-left: auto; /* Empuja los tiers al extremo derecho */
+/* --- TIERS CIRCULARES --- */
+.tiers-container { 
+    display: flex; 
+    gap: 8px; 
+    margin-left: auto; /* Al extremo derecho */
 }
 
 .tier-circle {
-    width: 46px;
-    height: 46px;
+    width: 42px;
+    height: 42px;
     border-radius: 50%;
     background: #0d1117;
-    border: 2px solid #30363d;
+    border: 2px solid #21262d;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    transition: 0.2s;
 }
 
-.tier-circle.empty {
-    border: 2px dashed #30363d;
-    opacity:
-.close-btn { position: absolute; top: 20px; right: 20px; background: none; border: none; color: #8b949e; font-size: 1.5rem; cursor: pointer; }
+.tier-circle.empty { border: 2px dashed #30363d; opacity: 0.3; }
+.m-icon { font-size: 0.9rem; margin-bottom: -2px; }
+.m-rank { font-size: 0.6rem; font-weight: bold; }
 
-/* Admin Footer */
-.admin-footer { margin-top: 50px; padding: 20px; border-top: 1px solid var(--border); }
-.admin-controls { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; }
+/* Colores de Tiers */
+.border-HT1 { border-color: #ff4b4b; color: #ff4b4b; }
+.border-LT1 { border-color: #ff8c4b; color: #ff8c4b; }
+.border-HT2 { border-color: #ffeb3b; color: #ffeb3b; }
+
+/* --- PANEL DE EDICIÓN / ADMIN --- */
+.edit-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    max-height: 450px;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.modality {
+    background: var(--card);
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    text-align: left;
+}
+
+.modality b {
+    font-size: 0.75rem;
+    color: #8b949e;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 6px;
+}
+
+.modality select {
+    width: 100%;
+    background: var(--bg);
+    color: white;
+    border: 1px solid var(--border);
+    padding: 6px;
+    border-radius: 4px;
+}
+
+/* --- OTROS --- */
+.close-btn {
+    position: absolute;
+    top: 15px; right: 15px;
+    background: none; border: none;
+    color: #8b949e; font-size: 1.5rem; cursor: pointer;
+}
+.close-btn:hover { color: #ff4b4b; }
+
+.region-tag {
+    background: #21262d;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: bold;
+    margin-left: 15px;
+}
+
+.tabs-container {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 20px;
+}
