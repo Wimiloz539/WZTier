@@ -1,21 +1,12 @@
 const ADMIN_KEY = "WZ21TIERS539";
 const API = "https://tiers.onrender.com";
 let allPlayers = [];
-let editingPlayer = null;
+let currentTab = 'overall';
 
-const levelPoints = {
-    HT1: 60, LT1: 45, HT2: 30, LT2: 20, HT3: 10, LT3: 6, HT4: 4, LT4: 3, HT5: 2, LT5: 1, None: 0
-};
-
-const modeIcons = {
-    sword: "⚔️", vanilla: "📦", uhc: "❤️", pot: "🧪", 
-    smp: "🌍", axe: "🪓", mace: "🔨", crystal: "💎"
-};
-
+const levelPoints = { HT1: 60, LT1: 45, HT2: 30, LT2: 20, HT3: 10, LT3: 6, HT4: 4, LT4: 3, HT5: 2, LT5: 1, None: 0 };
+const modeIcons = { sword: "⚔️", vanilla: "📦", uhc: "❤️", pot: "🧪", smp: "🌍", axe: "🪓", mace: "🔨", crystal: "💎" };
 const modes = Object.keys(modeIcons);
-const regions = ["NA", "EU", "SA", "AS", "OC"];
 
-// --- CARGA DE DATOS ---
 async function loadData() {
     try {
         const res = await fetch(`${API}/players`);
@@ -27,77 +18,95 @@ async function loadData() {
             return { ...p, points: pts };
         });
 
-        allPlayers.sort((a, b) => b.points - a.points);
-
-        if (document.getElementById("rankingContainer")) renderRanking();
-        if (document.getElementById("playersAdminList")) renderAdmin();
-    } catch (e) {
-        console.error("Error cargando datos:", e);
-    }
+        render();
+    } catch (e) { console.error("Error:", e); }
 }
 
-// --- RENDERIZAR RANKING (INDEX) ---
-function renderRanking() {
+function changeTab(tab) {
+    currentTab = tab;
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.innerText.toLowerCase().includes(tab));
+    });
+    render();
+}
+
+function render() {
     const container = document.getElementById("rankingContainer");
-    container.innerHTML = allPlayers.map((p, index) => {
-        let tiersHtml = modes.map(m => {
-            if (!p[m] || p[m] === "None") return '';
-            return `<div class="tier-circle-v2 border-v2-${p[m]}" style="width:25px; height:25px; font-size:10px;">
-                        <span>${modeIcons[m]}</span>
-                    </div>`;
-        }).join("");
+    let playersToShow = [...allPlayers];
+
+    // Si no es "overall", filtramos y ordenamos por esa modalidad específica
+    if (currentTab !== 'overall') {
+        playersToShow = playersToShow.filter(p => p[currentTab] && p[currentTab] !== "None");
+        playersToShow.sort((a, b) => levelPoints[b[currentTab]] - levelPoints[a[currentTab]]);
+    } else {
+        playersToShow.sort((a, b) => b.points - a.points);
+    }
+
+    container.innerHTML = playersToShow.map((p, index) => {
+        // Generar tiers ordenados para la fila
+        let playerTiers = modes
+            .map(m => ({ mode: m, rank: p[m] || 'None', pts: levelPoints[p[m]] || 0 }))
+            .filter(t => t.rank !== 'None')
+            .sort((a, b) => b.pts - a.pts); // Ordenar de mayor a menor
+
+        let tiersHtml = playerTiers.map(t => `
+            <div class="tier-pill border-${t.rank}">
+                <span>${modeIcons[t.mode]}</span>
+                <span class="rank-text">${t.rank}</span>
+            </div>
+        `).join("");
 
         return `
             <div class="player-row" onclick="viewPlayer('${p.name}')">
-                <div class="rank-index">${index + 1}</div>
-                <img class="p-icon" src="https://mc-heads.net/avatar/${p.name}/40" style="margin-left:15px">
-                <div class="name-box">
+                <div class="rank-num">#${index + 1}</div>
+                <img class="p-head" src="https://mc-heads.net/avatar/${p.name}/32">
+                <div class="p-info">
                     <span class="p-name">${p.name}</span>
-                    <span class="p-pts">${p.points} pts</span>
+                    <span class="p-pts-sub">${p.points} pts</span>
                 </div>
-                <div class="region-tag">${p.region || 'SA'}</div>
-                <div class="tiers-container">${tiersHtml}</div>
+                <div class="p-tiers-line">${tiersHtml}</div>
             </div>`;
     }).join("");
 }
 
-// --- VER PERFIL (MODAL) ---
 async function viewPlayer(name) {
     const p = allPlayers.find(x => x.name === name);
     if (!p) return;
 
     document.getElementById("modalName").innerText = p.name;
     document.getElementById("modalRegion").innerText = p.region || "South America";
-    document.getElementById("playerAvatar").src = `https://mc-heads.net/avatar/${p.name}/120`;
+    // Skin 3D de cuerpo completo (Frontal)
+    document.getElementById("playerBody").src = `https://mc-heads.net/body/${p.name}/right`;
     document.getElementById("modalNameMC").href = `https://namemc.com/search?q=${p.name}`;
     
-    const pIndex = allPlayers.findIndex(x => x.name === name);
-    document.getElementById("modalRankSide").innerText = `${pIndex + 1}.`;
-    document.getElementById("modalPoints").innerText = `(${p.points} points)`;
+    const globalRank = allPlayers.findIndex(x => x.name === name) + 1;
+    document.getElementById("modalRankSide").innerText = `#${globalRank} Overall`;
+    document.getElementById("modalPoints").innerText = `${p.points} Points`;
 
-    const stats = document.getElementById("modalStats");
-    stats.innerHTML = "";
-
-    let activeTiers = modes.filter(m => p[m] && p[m] !== "None")
-        .map(m => ({ mode: m, rank: p[m], pts: levelPoints[p[m]] }))
+    const statsContainer = document.getElementById("modalStats");
+    
+    // Tiers ordenados para el modal
+    let sortedTiers = modes
+        .map(m => ({ mode: m, rank: p[m] || 'None', pts: levelPoints[p[m]] || 0 }))
+        .filter(t => t.rank !== 'None')
         .sort((a, b) => b.pts - a.pts);
 
-    activeTiers.forEach(t => {
-        stats.innerHTML += `
-            <div class="tier-circle-v2 border-v2-${t.rank}">
-                <span class="m-icon-v2">${modeIcons[t.mode]}</span>
-                <span class="m-rank-v2">${t.rank}</span>
-            </div>`;
-    });
-
-    for (let j = activeTiers.length; j < 8; j++) {
-        stats.innerHTML += `<div class="tier-circle-v2 empty-v2"></div>`;
-    }
+    statsContainer.innerHTML = sortedTiers.map(t => `
+        <div class="modal-tier-card border-${t.rank}">
+            <div class="m-icon">${modeIcons[t.mode]}</div>
+            <div class="m-mode-name">${t.mode.toUpperCase()}</div>
+            <div class="m-rank-val">${t.rank}</div>
+        </div>
+    `).join("");
 
     document.getElementById("playerModal").style.display = "flex";
 }
 
-function closeModal() { document.getElementById("playerModal").style.display = "none"; }
+function closeModal() {
+    document.getElementById("playerModal").style.display = "none";
+}
+
+loadData();
 
 // --- FUNCIONES ADMIN ---
 function tryLogin() {
