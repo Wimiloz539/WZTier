@@ -3,29 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WZTiers</title>
+    <title>WZTiers Ranking</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
+        <h1>WZTiers Ranking</h1>
+
         <nav class="tabs">
-            <button class="tab-btn active" onclick="switchTab('overall')">Overall</button>
-            <button class="tab-btn" onclick="switchTab('vanilla')">Vanilla</button>
-            <button class="tab-btn" onclick="switchTab('uhc')">UHC</button>
-            <button class="tab-btn" onclick="switchTab('pot')">Pot</button>
+            <button class="tab-btn active" onclick="switchTab('overall')" data-tab="overall">Overall</button>
+            <button class="tab-btn" onclick="switchTab('sword')" data-tab="sword">Sword</button>
+            <button class="tab-btn" onclick="switchTab('vanilla')" data-tab="vanilla">Vanilla</button>
+            <button class="tab-btn" onclick="switchTab('uhc')" data-tab="uhc">UHC</button>
+            <button class="tab-btn" onclick="switchTab('pot')" data-tab="pot">Pot</button>
+            <button class="tab-btn" onclick="switchTab('smp')" data-tab="smp">SMP</button>
+            <button class="tab-btn" onclick="switchTab('axe')" data-tab="axe">Axe</button>
+            <button class="tab-btn" onclick="switchTab('mace')" data-tab="mace">Mace</button>
         </nav>
 
-        <div id="content-area">
-            </div>
-    </div>
+        <div id="rankingContainer">
+            <p style="text-align: center;">Cargando jugadores...</p>
+        </div>
 
-    <div id="profile-modal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeProfile()">&times;</span>
-            <div id="profile-data"></div>
+        <hr style="margin-top: 50px; border: 0.5px solid #30363d;">
+        
+        <div id="loginSection">
+            <h3>Panel de Administración</h3>
+            <input type="password" id="adminPassInput" placeholder="Contraseña Admin">
+            <button onclick="tryLogin()">Entrar</button>
+        </div>
+
+        <div id="adminContent" style="display: none;">
+            <h3>Gestionar Jugadores</h3>
+            <div class="admin-controls">
+                <input type="text" id="playerName" placeholder="Nombre del jugador">
+                <button onclick="addPlayer()">Añadir Jugador</button>
+            </div>
+            <table>
+                <thead>
+                    <tr><th>Nombre</th><th>Región</th><th>Editar</th><th>Eliminar</th></tr>
+                </thead>
+                <tbody id="playersAdmin"></tbody>
+            </table>
         </div>
     </div>
 
-    <script src="Script.js"></script>
+    <div id="playerModal" class="modal-overlay">
+        <div class="rank-card">
+            <button class="close-btn" onclick="closeModal()">&times;</button>
+            <div class="circular-avatar">
+                <img id="playerAvatar" src="" alt="Avatar">
+            </div>
+            <h2 id="modalName">Nombre</h2>
+            <div id="modalRank"></div>
+            <h3 class="section-label">TIERS</h3>
+            <div id="modalStats"></div>
+        </div>
+    </div>
+
+    <div id="editModal" class="modal-overlay">
+        <div class="rank-card">
+            <h3>Editando a <span id="editName"></span></h3>
+            <div id="editModes" class="edit-grid"></div>
+            <div style="margin-top:20px;">
+                <button onclick="saveEdit()" class="btn-edit">Guardar</button>
+                <button onclick="closeEditModal()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
