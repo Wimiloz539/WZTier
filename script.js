@@ -100,13 +100,6 @@ function viewPlayer(name) {
 
 function closeModal() { document.getElementById("playerModal").style.display = "none"; }
 
-function tryLogin() {
-    if (document.getElementById("adminPassInput").value === ADMIN_KEY) {
-        document.getElementById("loginSection").style.display = "none";
-        document.getElementById("adminContent").style.display = "block";
-    } else { alert("Clave incorrecta"); }
-}
-
 loadData();
 // --- ACCIONES ADMIN ---
 async function addPlayer() {
