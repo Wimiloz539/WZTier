@@ -218,3 +218,193 @@ button:hover {
     text-transform: uppercase;
     letter-spacing: 1px;
 }
+
+:root {
+    --bg-color: #0d1117;
+    --card-bg: #161b22;
+    --text-color: #c9d1d9;
+    --accent: #58a6ff;
+    --ht1: #ff4b4b; /* Rojo para HT1 */
+    --lt1: #ff8c00; /* Naranja para LT1 */
+    --ht2: #ffcc00;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.container { max-width: 1000px; margin: 20px auto; padding: 10px; }
+
+/* Tabs */
+.tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid #30363d; padding-bottom: 10px; }
+.tab-btn { background: none; border: none; color: #8b949e; cursor: pointer; padding: 10px 20px; font-weight: bold; }
+.tab-btn.active { color: white; border-bottom: 2px solid var(--accent); }
+
+/* Fila de Jugador (Línea Recta) */
+.player-row {
+    background: var(--card-bg);
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    border: 1px solid #30363d;
+    transition: transform 0.2s;
+    cursor: pointer;
+}
+.player-row:hover { transform: scale(1.01); border-color: var(--accent); }
+
+.avatar { width: 40px; height: 40px; border-radius: 4px; margin-right: 15px; }
+.player-info { flex: 1; }
+.player-name { font-weight: bold; display: block; }
+.player-points { font-size: 0.8em; color: #8b949e; }
+
+/* Contenedor de Tiers en horizontal */
+.tiers-line {
+    display: flex;
+    gap: 12px;
+    margin-left: 20px;
+}
+.tier-item { display: flex; flex-direction: column; align-items: center; font-size: 10px; font-weight: bold; }
+.tier-icon { width: 18px; height: 18px; margin-bottom: 2px; }
+
+/* Colores de Tiers */
+.tier-HT1 { color: var(--ht1); }
+.tier-LT1 { color: var(--lt1); }
+.tier-HT2 { color: var(--ht2); }
+
+/* Columnas para modalidades */
+.tier-columns { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; }
+.column { background: #1c2128; padding: 10px; border-radius: 8px; min-height: 400px; }
+.column h3 { text-align: center; border-bottom: 1px solid #30363d; padding-bottom: 5px; }
+
+/* Modal */
+.modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); }
+.modal-content { background: var(--bg-color); margin: 10% auto; padding: 20px; width: 50%; border-radius: 12px; border: 1px solid var(--accent); }
+
+/* Pestañas */
+.tabs { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 20px; }
+.tab-btn { background: #161b22; border: 1px solid #30363d; padding: 10px 20px; color: #8b949e; border-radius: 8px; cursor: pointer; }
+.tab-btn.active { border-color: #58a6ff; color: white; background: #21262d; }
+
+/* Fila de Jugador en línea recta */
+.player-row {
+    display: flex; 
+    align-items: center; 
+    background: #161b22; 
+    margin-bottom: 8px; 
+    padding: 10px 20px; 
+    border-radius: 8px; 
+    cursor: pointer;
+    border: 1px solid transparent;
+}
+.player-row:hover { border-color: #30363d; }
+.linear-tiers { display: flex; gap: 8px; margin-left: auto; }
+
+/* Colores de Tiers */
+.tier-HT1 { color: #ff4b4b; font-weight: bold; }
+.tier-LT1 { color: #ffa33f; }
+.tier-HT2 { color: #ffeb3b; }
+
+/* Columnas */
+.tier-columns-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; }
+.tier-column { background: #161b22; padding: 10px; border-radius: 10px; }
+.mini-player-card { display: flex; align-items: center; gap: 10px; padding: 5px; cursor: pointer; }
+
+:root {
+    --bg: #0d1117;
+    --card: #161b22;
+    --border: #30363d;
+    --text: #c9d1d9;
+    --accent: #58a6ff;
+}
+
+body { background: var(--bg); color: var(--text); font-family: sans-serif; }
+
+.player-row {
+    display: flex;
+    align-items: center;
+    background: var(--card);
+    margin-bottom: 6px;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.2s;
+    border: 1px solid transparent;
+}
+
+.player-row:hover { border-color: var(--border); background: #1c2128; }
+
+/* Alineación de nombre fija */
+.player-main-info { display: flex; align-items: center; width: 250px; gap: 12px; }
+.name-box { display: flex; flex-direction: column; text-align: left; }
+.p-name { font-weight: bold; font-size: 1.1rem; }
+.p-pts { font-size: 0.8rem; color: #8b949e; }
+
+/* Tiers Circulares */
+.tiers-container { display: flex; gap: 6px; margin-left: auto; }
+
+.tier-circle {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: #0d1117;
+    border: 2px solid #21262d;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.6rem;
+}
+
+.tier-circle.empty { border: 2px dashed #21262d; background: transparent; opacity: 0.3; }
+
+.m-icon { font-size: 0.9rem; margin-bottom: -2px; }
+.m-rank { font-weight: bold; }
+
+/* Colores de Borde por Rango */
+.border-HT1 { border-color: #ff4b4b; color: #ff4b4b; }
+.border-LT1 { border-color: #ff8c4b; color: #ff8c4b; }
+.border-HT2 { border-color: #ffeb3b; color: #ffeb3b; }
+
+/* Perfil Modal - Fix Avatar */
+.profile-card {
+    background: var(--bg);
+    padding: 30px;
+    border-radius: 15px;
+    border: 1px solid var(--border);
+    width: 450px;
+    text-align: center;
+    position: relative;
+}
+
+.profile-avatar-container {
+    height: 180px; /* Espacio para el cuerpo sin corte */
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    margin-bottom: 15px;
+}
+
+.profile-avatar-container img {
+    height: 100%;
+    object-fit: contain; /* Evita que se corte */
+}
+
+.tiers-row-profile {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 15px;
+}
+
+.region-tag {
+    background: #21262d;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: bold;
+}
