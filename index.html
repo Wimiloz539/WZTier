@@ -9,40 +9,46 @@
 <body>
     <div class="main-wrapper">
         <h1>WZTiers Ranking</h1>
+        
+        <div class="tabs-container">
+            <button class="tab-btn active" onclick="changeTab('overall')">🏆 Overall</button>
+            <button class="tab-btn" onclick="changeTab('sword')">⚔️ Sword</button>
+            <button class="tab-btn" onclick="changeTab('vanilla')">📦 Vanilla</button>
+            <button class="tab-btn" onclick="changeTab('uhc')">❤️ UHC</button>
+            <button class="tab-btn" onclick="changeTab('pot')">🧪 Pot</button>
+            <button class="tab-btn" onclick="changeTab('smp')">🌍 SMP</button>
+            <button class="tab-btn" onclick="changeTab('axe')">🪓 Axe</button>
+            <button class="tab-btn" onclick="changeTab('mace')">🔨 Mace</button>
+        </div>
+
         <div id="rankingContainer">
             </div>
     </div>
 
-    <div id="playerModal" class="modal-overlay">
+    <div id="playerModal" class="modal-overlay" style="display:none;">
         <div class="profile-card-v2">
-            <button class="close-btn-v2" onclick="closeModal()">&times;</button>
+            <button class="close-btn-v2" onclick="closeModal()">×</button>
+            
             <div class="profile-header-v2">
-                <div class="circular-avatar-v2">
-                    <img id="playerAvatar" src="" alt="Avatar">
+                <div class="skin-3d-container">
+                    <img id="playerBody" src="" alt="Skin 3D">
                 </div>
                 <h2 id="modalName">Nombre</h2>
-                <div class="combat-rank-badge">Combat Master</div>
-                <div id="modalRegion" class="region-text-v2">South America</div>
+                <div id="modalRegion" class="region-badge">REGION</div>
                 <a href="#" id="modalNameMC" class="namemc-btn" target="_blank">NameMC</a>
             </div>
 
             <div class="profile-section">
                 <h3>POSITION</h3>
-                <div class="position-gold-container">
-                    <div class="gold-rank-side">
-                        <span id="modalRankSide">1.</span>
-                    </div>
-                    <div class="overall-info-side">
-                        <span class="p-trophy">🏆</span>
-                        <span class="p-overall">OVERALL</span>
-                        <span id="modalPoints" class="p-points">(0 pts)</span>
-                    </div>
+                <div class="position-box">
+                    <span id="modalRankSide">#1</span>
+                    <span id="modalPoints">0 pts</span>
                 </div>
             </div>
 
             <div class="profile-section">
-                <h3>TIERS</h3>
-                <div id="modalStats" class="tiers-row-horizontal"></div>
+                <h3>ESTADÍSTICAS DE TIER</h3>
+                <div id="modalStats" class="tiers-row-ordered"></div>
             </div>
         </div>
     </div>
