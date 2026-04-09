@@ -535,3 +535,67 @@ body { background: var(--bg); color: var(--text); font-family: sans-serif; }
 
 .modal-m-icon { font-size: 1.1rem; }
 .modal-m-rank { font-size: 0.7rem; font-weight: bold; margin-top: -2px; }
+
+/* --- NUEVOS ESTILOS PARA EL PERFIL RECREADO (ItzRealMe) --- */
+:root {
+    --bg-modal: #0f172a; /* Fondo azul muy oscuro de la imagen */
+    --gold-bg: #f9bf2a; /* Color dorado intenso */
+    --combat-master-bg: #eab308; /* Color de fondo del badge */
+}
+
+/* Modal Overlay */
+.modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.8);
+    display: none; justify-content: center; align-items: center; z-index: 2000;
+}
+
+/* Profile Card - Recreada */
+.profile-card-v2 {
+    background: var(--bg-modal);
+    border-radius: 20px;
+    width: 450px;
+    padding: 30px;
+    position: relative;
+    border: 1px solid #1e293b;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+    color: white;
+    text-align: center;
+}
+
+/* Encabezado */
+.profile-header-v2 { display: flex; flex-direction: column; align-items: center; gap: 8px; margin-bottom: 25px; }
+.circular-avatar-v2 img { width: 120px; height: 120px; border-radius: 50%; border: 3px solid #ffca28; }
+.combat-rank-badge { background: #5c431d; color: #ffca28; padding: 4px 15px; border-radius: 20px; font-weight: bold; font-size: 0.85rem; }
+.region-text-v2 { color: #8b949e; font-size: 1.1rem; }
+.namemc-btn { background: #161b22; color: #c9d1d9; text-decoration: none; padding: 6px 15px; border-radius: 6px; font-size: 0.8rem; }
+
+/* Secciones (Position & Tiers) */
+.profile-section { margin-bottom: 25px; text-align: left; }
+.profile-section h3 { font-size: 0.9rem; color: #8b949e; text-transform: uppercase; margin: 0 0 10px 0; }
+
+/* Cuadro Dorado (Position) */
+.position-gold-container { display: flex; background: #161b22; border-radius: 6px; overflow: hidden; border: 1px solid #30363d; }
+.gold-rank-side { background: var(--gold-bg); padding: 10px 20px; display: flex; align-items: center; justify-content: center; }
+.gold-rank-side span { color: #1e1e1e; font-size: 1.6rem; font-weight: 900; }
+.overall-info-side { display: flex; align-items: center; gap: 8px; padding: 10px 20px; flex-grow: 1; }
+.p-overall { font-weight: 800; font-size: 1.2rem; }
+.p-points { color: #8b949e; font-size: 1rem; }
+
+/* Tiers Horizontales */
+.tiers-row-horizontal {
+    display: flex; gap: 8px; justify-content: center;
+    background: #161b22; padding: 10px; border-radius: 8px; border: 1px solid #30363d;
+}
+.tier-circle-v2 { width: 42px; height: 42px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #0d1117; border: 2px solid #21262d; }
+.tier-circle-v2.empty-v2 { border: 2px dashed #21262d; background: transparent; opacity: 0.3; }
+.m-icon-v2 { font-size: 0.9rem; }
+.m-rank-v2 { font-weight: bold; font-size: 0.6rem; margin-top: -2px; }
+
+/* Colores de Tiers Recreados */
+.border-v2-HT1 { border-color: #ff4b4b; color: #ff4b4b; }
+.border-v2-LT1 { border-color: #ffca28; color: #ffca28; } /* Dorado para LT1 de la imagen */
+.border-v2-HT3 { border-color: #8d6e63; color: #8d6e63; } /* Marrón para HT3 de la imagen */
+
+/* Cerrar */
+.close-btn-v2 { position: absolute; top: 15px; right: 15px; background: none; border: none; color: #8b949e; font-size: 1.5rem; cursor: pointer; }
+.close-btn-v2:hover { color: #da3633; }
