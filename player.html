@@ -1,43 +1,52 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-<title>Player</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <title>Player</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
 <h1 id="playerName"></h1>
-
 <div id="stats"></div>
 
 <script src="script.js"></script>
+<script>
+const params = new URLSearchParams(window.location.search);
+const playerNameParam = params.get("name");
+
+async function loadPlayer() {
+    if (!playerNameParam) {
+        document.getElementById("playerName").innerText = "Jugador no encontrado";
+        return;
+    }
+
+    const p = allPlayers.find(x => x.name === playerNameParam);
+    if (!p) {
+        document.getElementById("playerName").innerText = "Jugador no encontrado";
+        return;
+    }
+
+    document.getElementById("playerName").innerText = p.name;
+
+    let html = "";
+    modes.forEach(m => {
+        if (p[m] && p[m] !== "None") {
+            html += `<p>${modeIcons[m]} ${m}: ${p[m]}</p>`;
+        }
+    });
+
+    document.getElementById("stats").innerHTML = html || "<p>Sin tiers asignados</p>";
+}
+
+// loadData() ya fue llamado por script.js. Esperamos a que los datos estén listos.
+const _checkReady = setInterval(() => {
+    if (allPlayers.length > 0 || document.readyState === "complete") {
+        clearInterval(_checkReady);
+        loadPlayer();
+    }
+}, 100);
+</script>
 
 </body>
 </html>
-
-const params = new URLSearchParams(window.location.search)
-const name = params.get("name")
-
-async function loadPlayer(){
-
-const res = await fetch(API)
-const players = await res.json()
-
-const p = players.find(x=>x.name===name)
-
-let html=""
-
-modes.forEach(m=>{
-
-html += `
-<p>${m}: ${p[m]}</p>
-`
-
-})
-
-document.getElementById("stats").innerHTML = html
-
-}
-
-loadPlayer()
