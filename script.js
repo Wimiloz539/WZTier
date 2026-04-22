@@ -6,16 +6,16 @@ let editingPlayer = null;
 
 // Puntuación y Configuración
 const levelPoints = {
-    HT1: 100, LT1: 90, HT2: 80, LT2: 70, HT3: 60, LT3: 50, HT4: 40, LT4: 30, HT5: 20, LT5: 10, None: 0
+    HT1: 60, LT1: 45, HT2: 30, LT2: 20, HT3: 10, LT3: 6, HT4: 4, LT4: 3, HT5: 2, LT5: 1, None: 0
 };
 
 const modeIcons = {
-    sword: "⚔️", vanilla: "📦", uhc: "❤️", pot: "🧪", 
-    smp: "🌍", axe: "🪓", mace: "🔨", crystal: "💎"
+    sword: "⚔️", axe: "🪓", crystal: "💎", uhc: "❤️",
+    smp: "🌍", nethpot: "🧪", diamondpot: "🥵", mace: "🔨"
 };
 
 const modes = Object.keys(modeIcons);
-const regions = ["NA", "EU", "SA", "AS", "OC"];
+const regions = ["NA", "EU", "SA", "AS", "OC"]
 
 // Carga inicial de datos
 async function loadData() {
@@ -43,7 +43,7 @@ async function loadData() {
 }
 
 // --- RANKING (index.html) ---
-function switchTab(tab) {
+function switchTab(tab, event) {
     currentTab = tab;
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     if (event) event.target.classList.add('active');
