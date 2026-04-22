@@ -6,7 +6,7 @@ let editingPlayer = null;
 
 // Puntuación y Configuración
 const levelPoints = {
-    HT1: 60, LT1: 45, HT2: 30, LT2: 20, HT3: 10, LT3: 6, HT4: 4, LT4: 3, HT5: 2, LT5: 1, None: 0
+    HT1: 60, RHT1: 30, LT1: 45, RLT1: 25, HT2: 30, RHT2: 15, LT2: 20, RLT2: 1O, HT3: 10, LT3: 6, HT4: 4, LT4: 3, HT5: 2, LT5: 1, None: 0
 };
 
 const modeIcons = {
