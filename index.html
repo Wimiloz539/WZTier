@@ -11,14 +11,15 @@
         <h1>WZTiers Ranking</h1>
 
         <nav class="tabs-container">
-            <button class="tab-btn active" onclick="switchTab('overall')">🏆 Overall</button>
-            <button class="tab-btn" onclick="switchTab('sword')">⚔️ Sword</button>
-            <button class="tab-btn" onclick="switchTab('vanilla')">📦 Vanilla</button>
-            <button class="tab-btn" onclick="switchTab('uhc')">❤️ UHC</button>
-            <button class="tab-btn" onclick="switchTab('pot')">🧪 Pot</button>
-            <button class="tab-btn" onclick="switchTab('smp')">🌍 SMP</button>
-            <button class="tab-btn" onclick="switchTab('axe')">🪓 Axe</button>
-            <button class="tab-btn" onclick="switchTab('mace')">🔨 Mace</button>
+            <button class="tab-btn active" onclick="switchTab('overall', event)">🏆 Overall</button>
+            <button class="tab-btn" onclick="switchTab('sword', event)">⚔️ Sword</button>
+            <button class="tab-btn" onclick="switchTab('axe', event)">🪓 Axe</button>
+            <button class="tab-btn" onclick="switchTab('crystal', event)">💎 Crystal</button>
+            <button class="tab-btn" onclick="switchTab('uhc', event)">❤️ UHC</button>
+            <button class="tab-btn" onclick="switchTab('smp', event)">🌍 SMP</button>
+            <button class="tab-btn" onclick="switchTab('nethpot', event)">🧪 NethPot</button>
+            <button class="tab-btn" onclick="switchTab('diamondpot', event)">🥵 DiamondPot</button>
+            <button class="tab-btn" onclick="switchTab('mace', event)">🔨 Mace</button>
         </nav>
 
         <div id="rankingContainer"></div>
